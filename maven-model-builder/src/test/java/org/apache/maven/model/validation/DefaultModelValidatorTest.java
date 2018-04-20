@@ -163,7 +163,8 @@ public class DefaultModelValidatorTest
 
         assertEquals( "'groupId' with value 'o/a/m' does not match a valid id pattern.", result.getErrors().get( 0 ) );
 
-        assertEquals( "'artifactId' with value 'm$-do$' does not match a valid id pattern.", result.getErrors().get( 1 ) );
+        assertEquals( "'artifactId' with value 'm$-do$' does not match a valid id pattern.",
+                      result.getErrors().get( 1 ) );
     }
 
     public void testMissingType()
@@ -203,8 +204,7 @@ public class DefaultModelValidatorTest
 
         assertViolations( result, 0, 1, 0 );
 
-        assertTrue( result.getErrors().get( 0 ).contains(
-            "'dependencies.dependency.artifactId' for groupId:null:jar is missing" ) );
+        assertTrue( result.getErrors().get( 0 ).contains( "'dependencies.dependency.artifactId' for groupId:null:jar is missing" ) );
     }
 
     public void testMissingDependencyGroupId()
@@ -214,8 +214,7 @@ public class DefaultModelValidatorTest
 
         assertViolations( result, 0, 1, 0 );
 
-        assertTrue( result.getErrors().get( 0 ).contains(
-            "'dependencies.dependency.groupId' for null:artifactId:jar is missing" ) );
+        assertTrue( result.getErrors().get( 0 ).contains( "'dependencies.dependency.groupId' for null:artifactId:jar is missing" ) );
     }
 
     public void testMissingDependencyVersion()
@@ -225,8 +224,7 @@ public class DefaultModelValidatorTest
 
         assertViolations( result, 0, 1, 0 );
 
-        assertTrue( result.getErrors().get( 0 ).contains(
-            "'dependencies.dependency.version' for groupId:artifactId:jar is missing" ) );
+        assertTrue( result.getErrors().get( 0 ).contains( "'dependencies.dependency.version' for groupId:artifactId:jar is missing" ) );
     }
 
     public void testMissingDependencyManagementArtifactId()
@@ -236,8 +234,7 @@ public class DefaultModelValidatorTest
 
         assertViolations( result, 0, 1, 0 );
 
-        assertTrue( result.getErrors().get( 0 ).contains(
-            "'dependencyManagement.dependencies.dependency.artifactId' for groupId:null:jar is missing" ) );
+        assertTrue( result.getErrors().get( 0 ).contains( "'dependencyManagement.dependencies.dependency.artifactId' for groupId:null:jar is missing" ) );
     }
 
     public void testMissingDependencyManagementGroupId()
@@ -247,8 +244,7 @@ public class DefaultModelValidatorTest
 
         assertViolations( result, 0, 1, 0 );
 
-        assertTrue( result.getErrors().get( 0 ).contains(
-            "'dependencyManagement.dependencies.dependency.groupId' for null:artifactId:jar is missing" ) );
+        assertTrue( result.getErrors().get( 0 ).contains( "'dependencyManagement.dependencies.dependency.groupId' for null:artifactId:jar is missing" ) );
     }
 
     public void testMissingAll()
@@ -422,7 +418,21 @@ public class DefaultModelValidatorTest
 
         assertViolations( result, 0, 0, 1 );
 
-        assertTrue( result.getWarnings().get( 0 ).contains( "test:a:jar" ) );
+        assertContains( result.getWarnings().get( 0 ),
+                        "'dependencies.dependency.systemPath' for test:a:jar should use a variable instead of a hard-coded path" );
+
+        SimpleProblemCollector result_31 =
+            validateRaw( "hard-coded-system-path.xml", ModelBuildingRequest.VALIDATION_LEVEL_MAVEN_3_1 );
+
+        assertViolations( result_31, 0, 0, 3 );
+
+        assertContains( result_31.getWarnings().get( 0 ),
+                        "'dependencies.dependency.scope' for test:a:jar declares usage of deprecated 'system' scope" );
+        assertContains( result_31.getWarnings().get( 1 ),
+                        "'dependencies.dependency.systemPath' for test:a:jar should use a variable instead of a hard-coded path" );
+        assertContains( result_31.getWarnings().get( 2 ),
+                        "'dependencies.dependency.scope' for test:b:jar declares usage of deprecated 'system' scope" );
+
     }
 
     public void testEmptyModule()
@@ -555,7 +565,8 @@ public class DefaultModelValidatorTest
     public void testBadDependencyExclusionId()
         throws Exception
     {
-        SimpleProblemCollector result = validateEffective( "bad-dependency-exclusion-id.xml", ModelBuildingRequest.VALIDATION_LEVEL_MAVEN_2_0 );
+        SimpleProblemCollector result =
+            validateEffective( "bad-dependency-exclusion-id.xml", ModelBuildingRequest.VALIDATION_LEVEL_MAVEN_2_0 );
 
         assertViolations( result, 0, 0, 2 );
 
@@ -614,10 +625,75 @@ public class DefaultModelValidatorTest
 
         assertViolations( result, 0, 0, 2 );
 
-        assertContains( result.getWarnings().get( 0 ), "'dependencies.dependency.systemPath' for test:a:jar "
-            + "should not point at files within the project directory" );
-        assertContains( result.getWarnings().get( 1 ), "'dependencies.dependency.systemPath' for test:b:jar "
-            + "should not point at files within the project directory" );
+        assertContains( result.getWarnings().get( 0 ),
+                        "'dependencies.dependency.systemPath' for test:a:jar should not point at files within the project directory" );
+        assertContains( result.getWarnings().get( 1 ),
+                        "'dependencies.dependency.systemPath' for test:b:jar should not point at files within the project directory" );
+
+        SimpleProblemCollector result_31 =
+            validateRaw( "basedir-system-path.xml", ModelBuildingRequest.VALIDATION_LEVEL_MAVEN_3_1 );
+
+        assertViolations( result_31, 0, 0, 4 );
+
+        assertContains( result_31.getWarnings().get( 0 ),
+                        "'dependencies.dependency.scope' for test:a:jar declares usage of deprecated 'system' scope" );
+        assertContains( result_31.getWarnings().get( 1 ),
+                        "'dependencies.dependency.systemPath' for test:a:jar should not point at files within the project directory" );
+        assertContains( result_31.getWarnings().get( 2 ),
+                        "'dependencies.dependency.scope' for test:b:jar declares usage of deprecated 'system' scope" );
+        assertContains( result_31.getWarnings().get( 3 ),
+                        "'dependencies.dependency.systemPath' for test:b:jar should not point at files within the project directory" );
+    }
+
+    public void testInvalidVersionInPluginManagement()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/missing-plugin-version-pluginManagement.xml" );
+
+        assertViolations( result, 1, 0, 0 );
+
+        assertEquals( "'build.pluginManagement.plugins.plugin.(groupId:artifactId)' version of a plugin must be defined. ",
+                      result.getFatals().get( 0 ) );
+
+    }
+
+    public void testInvalidGroupIdInPluginManagement()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/missing-groupId-pluginManagement.xml" );
+
+        assertViolations( result, 1, 0, 0 );
+
+        assertEquals( "'build.pluginManagement.plugins.plugin.(groupId:artifactId)' groupId of a plugin must be defined. ",
+                      result.getFatals().get( 0 ) );
+
+    }
+
+    public void testInvalidArtifactIdInPluginManagement()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/missing-artifactId-pluginManagement.xml" );
+
+        assertViolations( result, 1, 0, 0 );
+
+        assertEquals( "'build.pluginManagement.plugins.plugin.(groupId:artifactId)' artifactId of a plugin must be defined. ",
+                      result.getFatals().get( 0 ) );
+
+    }
+
+    public void testInvalidGroupAndArtifactIdInPluginManagement()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/missing-ga-pluginManagement.xml" );
+
+        assertViolations( result, 2, 0, 0 );
+
+        assertEquals( "'build.pluginManagement.plugins.plugin.(groupId:artifactId)' groupId of a plugin must be defined. ",
+                      result.getFatals().get( 0 ) );
+
+        assertEquals( "'build.pluginManagement.plugins.plugin.(groupId:artifactId)' artifactId of a plugin must be defined. ",
+                      result.getFatals().get( 1 ) );
+
     }
 
     public void testMissingReportPluginVersion()
@@ -626,5 +702,98 @@ public class DefaultModelValidatorTest
         SimpleProblemCollector result = validate( "missing-report-version-pom.xml" );
 
         assertViolations( result, 0, 0, 0 );
+    }
+
+    public void testDeprecatedDependencyMetaversionsLatestAndRelease()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "deprecated-dependency-metaversions-latest-and-release.xml" );
+
+        assertViolations( result, 0, 0, 2 );
+
+        assertContains( result.getWarnings().get( 0 ),
+                        "'dependencies.dependency.version' for test:a:jar is either LATEST or RELEASE (both of them are being deprecated)" );
+        assertContains( result.getWarnings().get( 1 ),
+                        "'dependencies.dependency.version' for test:b:jar is either LATEST or RELEASE (both of them are being deprecated)" );
+    }
+
+    public void testSelfReferencingDependencyInRawModel()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/self-referencing.xml" );
+
+        assertViolations( result, 1, 0, 0 );
+
+        assertEquals( "'dependencies.dependency com.example.group:testinvalidpom:0.0.1-SNAPSHOT' for com.example.group:testinvalidpom:0.0.1-SNAPSHOT is referencing itself.",
+                      result.getFatals().get( 0 ) );
+
+    }
+
+    public void testCiFriendlySha1()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/ok-ci-friendly-sha1.xml" );
+        assertViolations( result, 0, 0, 0 );
+    }
+
+    public void testCiFriendlyRevision()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/ok-ci-friendly-revision.xml" );
+        assertViolations( result, 0, 0, 0 );
+    }
+
+    public void testCiFriendlyChangeList()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/ok-ci-friendly-changelist.xml" );
+        assertViolations( result, 0, 0, 0 );
+    }
+
+    public void testCiFriendlyAllExpressions()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/ok-ci-friendly-all-expressions.xml" );
+        assertViolations( result, 0, 0, 0 );
+    }
+
+    public void testCiFriendlyBad()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/bad-ci-friendly.xml" );
+        assertViolations( result, 0, 0, 1 );
+        assertEquals( "'version' contains an expression but should be a constant.", result.getWarnings().get( 0 ) );
+    }
+
+    public void testCiFriendlyBadSha1Plus()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/bad-ci-friendly-sha1plus.xml" );
+        assertViolations( result, 0, 0, 1 );
+        assertEquals( "'version' contains an expression but should be a constant.", result.getWarnings().get( 0 ) );
+    }
+
+    public void testCiFriendlyBadSha1Plus2()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/bad-ci-friendly-sha1plus2.xml" );
+        assertViolations( result, 0, 0, 1 );
+        assertEquals( "'version' contains an expression but should be a constant.", result.getWarnings().get( 0 ) );
+    }
+
+    public void testParentVersionLATEST()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/bad-parent-version-latest.xml" );
+        assertViolations( result, 0, 0, 1 );
+        assertEquals( "'parent.version' is either LATEST or RELEASE (both of them are being deprecated)", result.getWarnings().get( 0 ) );
+    }
+
+    public void testParentVersionRELEASE()
+        throws Exception
+    {
+        SimpleProblemCollector result = validateRaw( "raw-model/bad-parent-version-release.xml" );
+        assertViolations( result, 0, 0, 1 );
+        assertEquals( "'parent.version' is either LATEST or RELEASE (both of them are being deprecated)", result.getWarnings().get( 0 ) );
     }
 }

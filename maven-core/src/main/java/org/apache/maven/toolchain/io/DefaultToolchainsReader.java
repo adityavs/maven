@@ -28,9 +28,9 @@ import java.util.Map;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.toolchain.model.PersistedToolchains;
 import org.apache.maven.toolchain.model.io.xpp3.MavenToolchainsXpp3Reader;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
@@ -50,10 +50,7 @@ public class DefaultToolchainsReader
     public PersistedToolchains read( File input, Map<String, ?> options )
         throws IOException
     {
-        if ( input == null )
-        {
-            throw new IllegalArgumentException( "input file missing" );
-        }
+        Validate.notNull( input, "input cannot be null" );
 
         return read( ReaderFactory.newXmlReader( input ), options );
     }
@@ -62,23 +59,15 @@ public class DefaultToolchainsReader
     public PersistedToolchains read( Reader input, Map<String, ?> options )
         throws IOException
     {
-        if ( input == null )
-        {
-            throw new IllegalArgumentException( "input reader missing" );
-        }
+        Validate.notNull( input, "input cannot be null" );
 
-        try
+        try ( final Reader in = input )
         {
-            MavenToolchainsXpp3Reader r = new MavenToolchainsXpp3Reader();
-            return r.read( input, isStrict( options ) );
+            return new MavenToolchainsXpp3Reader().read( in, isStrict( options ) );
         }
         catch ( XmlPullParserException e )
         {
             throw new ToolchainsParseException( e.getMessage(), e.getLineNumber(), e.getColumnNumber(), e );
-        }
-        finally
-        {
-            IOUtil.close( input );
         }
     }
 
@@ -86,23 +75,15 @@ public class DefaultToolchainsReader
     public PersistedToolchains read( InputStream input, Map<String, ?> options )
         throws IOException
     {
-        if ( input == null )
-        {
-            throw new IllegalArgumentException( "input stream missing" );
-        }
+        Validate.notNull( input, "input cannot be null" );
 
-        try
+        try ( final InputStream in = input )
         {
-            MavenToolchainsXpp3Reader r = new MavenToolchainsXpp3Reader();
-            return r.read( input, isStrict( options ) );
+            return new MavenToolchainsXpp3Reader().read( in, isStrict( options ) );
         }
         catch ( XmlPullParserException e )
         {
             throw new ToolchainsParseException( e.getMessage(), e.getLineNumber(), e.getColumnNumber(), e );
-        }
-        finally
-        {
-            IOUtil.close( input );
         }
     }
 

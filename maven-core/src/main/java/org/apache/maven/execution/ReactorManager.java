@@ -31,6 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * ReactorManager - unused
+ */
 @Deprecated
 public class ReactorManager
 {
@@ -79,7 +82,7 @@ public class ReactorManager
 
         if ( pluginContext == null )
         {
-            pluginContext = new HashMap();
+            pluginContext = new HashMap<>();
             pluginContextsByKey.put( plugin.getPluginLookupKey(), pluginContext );
         }
 

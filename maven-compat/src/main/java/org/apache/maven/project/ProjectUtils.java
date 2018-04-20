@@ -37,6 +37,9 @@ import org.eclipse.aether.RepositorySystemSession;
 // This class needs to stick around because it was exposed the the remote resources plugin started using it instead of
 // getting the repositories from the project.
 
+/**
+ * ProjectUtils
+ */
 @Deprecated
 public final class ProjectUtils
 {
@@ -45,9 +48,8 @@ public final class ProjectUtils
     {
     }
 
-    public static List<ArtifactRepository> buildArtifactRepositories( List<Repository> repositories,
-                                                                      ArtifactRepositoryFactory artifactRepositoryFactory,
-                                                                      PlexusContainer c )
+    public static List<ArtifactRepository> buildArtifactRepositories(
+        List<Repository> repositories, ArtifactRepositoryFactory artifactRepositoryFactory, PlexusContainer c )
         throws InvalidRepositoryException
     {
 
@@ -61,17 +63,15 @@ public final class ProjectUtils
         return remoteRepositories;
     }
 
-    public static ArtifactRepository buildDeploymentArtifactRepository( DeploymentRepository repo,
-                                                                        ArtifactRepositoryFactory artifactRepositoryFactory,
-                                                                        PlexusContainer c )
+    public static ArtifactRepository buildDeploymentArtifactRepository(
+        DeploymentRepository repo, ArtifactRepositoryFactory artifactRepositoryFactory, PlexusContainer c )
         throws InvalidRepositoryException
     {
         return buildArtifactRepository( repo, artifactRepositoryFactory, c );
     }
 
-    public static ArtifactRepository buildArtifactRepository( Repository repo,
-                                                              ArtifactRepositoryFactory artifactRepositoryFactory,
-                                                              PlexusContainer c )
+    public static ArtifactRepository buildArtifactRepository(
+        Repository repo, ArtifactRepositoryFactory artifactRepositoryFactory, PlexusContainer c )
         throws InvalidRepositoryException
     {
         RepositorySystem repositorySystem = rs( c );

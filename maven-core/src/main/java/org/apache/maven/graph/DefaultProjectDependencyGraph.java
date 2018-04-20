@@ -21,10 +21,12 @@ package org.apache.maven.graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.project.DuplicateProjectException;
 import org.apache.maven.project.MavenProject;
@@ -42,6 +44,8 @@ public class DefaultProjectDependencyGraph
 
     private ProjectSorter sorter;
 
+    private List<MavenProject> allProjects;
+
     /**
      * Creates a new project dependency graph based on the specified projects.
      *
@@ -52,7 +56,36 @@ public class DefaultProjectDependencyGraph
     public DefaultProjectDependencyGraph( Collection<MavenProject> projects )
         throws CycleDetectedException, DuplicateProjectException
     {
+        super();
+        this.allProjects = Collections.unmodifiableList( new ArrayList<>( projects ) );
         this.sorter = new ProjectSorter( projects );
+    }
+
+    /**
+     * Creates a new project dependency graph based on the specified projects.
+     *
+     * @param allProjects All collected projects.
+     * @param projects The projects to create the dependency graph with.
+     *
+     * @throws DuplicateProjectException
+     * @throws CycleDetectedException
+     * @since 3.5.0
+     */
+    public DefaultProjectDependencyGraph( final List<MavenProject> allProjects,
+                                          final Collection<MavenProject> projects )
+        throws CycleDetectedException, DuplicateProjectException
+    {
+        super();
+        this.allProjects = Collections.unmodifiableList( new ArrayList<>( allProjects ) );
+        this.sorter = new ProjectSorter( projects );
+    }
+
+    /**
+     * @since 3.5.0
+     */
+    public List<MavenProject> getAllProjects()
+    {
+        return this.allProjects;
     }
 
     public List<MavenProject> getSortedProjects()
@@ -62,10 +95,7 @@ public class DefaultProjectDependencyGraph
 
     public List<MavenProject> getDownstreamProjects( MavenProject project, boolean transitive )
     {
-        if ( project == null )
-        {
-            throw new IllegalArgumentException( "project missing" );
-        }
+        Validate.notNull( project, "project cannot be null" );
 
         Set<String> projectIds = new HashSet<>();
 
@@ -87,10 +117,7 @@ public class DefaultProjectDependencyGraph
 
     public List<MavenProject> getUpstreamProjects( MavenProject project, boolean transitive )
     {
-        if ( project == null )
-        {
-            throw new IllegalArgumentException( "project missing" );
-        }
+        Validate.notNull( project, "project cannot be null" );
 
         Set<String> projectIds = new HashSet<>();
 

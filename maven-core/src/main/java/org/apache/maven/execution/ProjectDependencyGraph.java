@@ -27,9 +27,19 @@ import org.apache.maven.project.MavenProject;
  * Describes the inter-dependencies between projects in the reactor.
  *
  * @author Benjamin Bentmann
+ * @since 3.0-alpha
  */
 public interface ProjectDependencyGraph
 {
+
+    /**
+     * Gets all collected projects.
+     *
+     * @return All collected projects.
+     *
+     * @since 3.5.0
+     */
+    List<MavenProject> getAllProjects();
 
     /**
      * Gets all projects in their intended build order, i.e. after topologically sorting the projects according to their

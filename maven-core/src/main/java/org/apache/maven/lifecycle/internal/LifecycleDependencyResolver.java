@@ -19,6 +19,8 @@ package org.apache.maven.lifecycle.internal;
  * under the License.
  */
 
+import java.io.File;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +45,7 @@ import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectDependenciesResolver;
 import org.apache.maven.project.artifact.InvalidDependencyVersionException;
+import org.apache.maven.project.artifact.ProjectArtifactsCache;
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
@@ -51,14 +54,14 @@ import org.eclipse.aether.util.filter.AndDependencyFilter;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 
 /**
+ * <p>
  * Resolves dependencies for the artifacts in context of the lifecycle build
- *
+ * </p>
+ * <strong>NOTE:</strong> This class is not part of any public api and can be changed or deleted without prior notice.
  * @since 3.0
  * @author Benjamin Bentmann
  * @author Jason van Zyl
  * @author Kristian Rosenvold (extracted class)
- *         <p/>
- *         NOTE: This class is not part of any public api and can be changed or deleted without prior notice.
  */
 @Named
 public class LifecycleDependencyResolver
@@ -75,6 +78,9 @@ public class LifecycleDependencyResolver
 
     @Inject
     private EventSpyDispatcher eventSpyDispatcher;
+    
+    @Inject
+    private ProjectArtifactsCache projectArtifactsCache;
 
     public LifecycleDependencyResolver()
     {
@@ -123,17 +129,59 @@ public class LifecycleDependencyResolver
                     throw new LifecycleExecutionException( e );
                 }
             }
+            
+            Set<Artifact> resolvedArtifacts;
+            ProjectArtifactsCache.Key cacheKey = projectArtifactsCache.createKey( project,  scopesToCollect, 
+                scopesToResolve, aggregating, session.getRepositorySession() );
+            ProjectArtifactsCache.CacheRecord recordArtifacts;
+            recordArtifacts = projectArtifactsCache.get( cacheKey );
+            
+            if ( recordArtifacts != null )
+            {
+                resolvedArtifacts = recordArtifacts.getArtifacts();
+            }
+            else
+            {
+                try
+                {
+                    resolvedArtifacts = getDependencies( project, scopesToCollect, scopesToResolve, session,
+                                                         aggregating, projectArtifacts );
+                    recordArtifacts = projectArtifactsCache.put( cacheKey, resolvedArtifacts );
+                }
+                catch ( LifecycleExecutionException e )
+                {
+                  projectArtifactsCache.put( cacheKey, e );
+                  projectArtifactsCache.register( project, cacheKey, recordArtifacts );
+                    throw e;
+                }
+            }
+            projectArtifactsCache.register( project, cacheKey, recordArtifacts );
 
-            Set<Artifact> artifacts =
-                getDependencies( project, scopesToCollect, scopesToResolve, session, aggregating, projectArtifacts );
-
-            project.setResolvedArtifacts( artifacts );
+            Map<Artifact, File> reactorProjects = new HashMap<>( session.getProjects().size() );
+            for ( MavenProject reactorProject : session.getProjects() )
+            {
+                reactorProjects.put( reactorProject.getArtifact(), reactorProject.getArtifact().getFile() );
+            }
 
             Map<String, Artifact> map = new HashMap<>();
-            for ( Artifact artifact : artifacts )
+            for ( Artifact artifact : resolvedArtifacts )
             {
+                /**
+                 * MNG-6300: resolvedArtifacts can be cache result; this ensures reactor files are always up to date 
+                 * During lifecycle the Artifact.getFile() can change from target/classes to the actual jar.
+                 * This clearly shows that target/classes should not be abused as artifactFile just for the classpath
+                 */
+                File reactorProjectFile = reactorProjects.get( artifact );
+                if ( reactorProjectFile != null )
+                {
+                    artifact.setFile( reactorProjectFile );
+                }
+
                 map.put( artifact.getDependencyConflictId(), artifact );
             }
+            
+            project.setResolvedArtifacts( resolvedArtifacts );
+            
             for ( Artifact artifact : project.getDependencyArtifacts() )
             {
                 if ( artifact.getFile() == null )
@@ -308,7 +356,7 @@ public class LifecycleDependencyResolver
 
         private Set<String> keys = new HashSet<>();
 
-        public ReactorDependencyFilter( Collection<Artifact> artifacts )
+        ReactorDependencyFilter( Collection<Artifact> artifacts )
         {
             for ( Artifact artifact : artifacts )
             {

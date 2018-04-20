@@ -28,7 +28,11 @@ import org.apache.maven.artifact.metadata.ArtifactMetadata;
 import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
 import org.apache.maven.repository.Proxy;
 
-//TODO: completely separate local and remote artifact repositories
+/**
+ * Abstraction of an artifact repository. Artifact repositories can be remote, local, or even build reactor or
+ * IDE workspace.
+ */
+//TODO completely separate local and remote artifact repositories
 public class MavenArtifactRepository
     implements ArtifactRepository
 {
@@ -132,15 +136,15 @@ public class MavenArtifactRepository
 
     public String toString()
     {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder( 256 );
 
-        sb.append( "      id: " ).append( getId() ).append( "\n" );
-        sb.append( "      url: " ).append( getUrl() ).append( "\n" );
-        sb.append( "   layout: " ).append( layout != null ? layout : "none" ).append( "\n" );
+        sb.append( "      id: " ).append( getId() ).append( '\n' );
+        sb.append( "      url: " ).append( getUrl() ).append( '\n' );
+        sb.append( "   layout: " ).append( layout != null ? layout : "none" ).append( '\n' );
 
         if ( proxy != null )
         {
-            sb.append( "    proxy: " ).append( proxy.getHost() ).append( ":" ).append( proxy.getPort() ).append( "\n" );
+            sb.append( "    proxy: " ).append( proxy.getHost() ).append( ':' ).append( proxy.getPort() ).append( '\n' );
         }
 
         if ( snapshots != null )
@@ -213,14 +217,14 @@ public class MavenArtifactRepository
      * Return the protocol name.
      * <br/>
      * E.g: for input
-     * <code>http://www.codehause.org</code> this method will return <code>http</code>
+     * <code>http://www.codehaus.org</code> this method will return <code>http</code>
      *
      * @param url the url
      * @return the host name
      */
     private static String protocol( final String url )
     {
-        final int pos = url.indexOf( ":" );
+        final int pos = url.indexOf( ':' );
 
         if ( pos == -1 )
         {
@@ -234,7 +238,7 @@ public class MavenArtifactRepository
      *
      * @param url the repository URL
      * @return the basedir of the repository
-     * @todo need to URL decode for spaces?
+     * TODO need to URL decode for spaces?
      */
     private String basedir( String url )
     {
@@ -257,7 +261,7 @@ public class MavenArtifactRepository
                 else
                 {
                     // Now we expect the host
-                    int index = retValue.indexOf( "/" );
+                    int index = retValue.indexOf( '/' );
                     if ( index >= 0 )
                     {
                         retValue = retValue.substring( index + 1 );

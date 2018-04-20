@@ -27,11 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.eventspy.internal.EventSpyDispatcher;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.properties.internal.SystemProperties;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
@@ -40,8 +42,6 @@ import org.eclipse.aether.DefaultRepositoryCache;
 import org.eclipse.aether.RepositoryCache;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.transfer.TransferListener;
-
-import com.google.common.collect.Maps;
 
 /**
  * @author Jason van Zyl
@@ -57,7 +57,7 @@ public class DefaultMavenExecutionRequest
     private ArtifactRepository localRepository;
 
     private EventSpyDispatcher eventSpyDispatcher;
-    
+
     private File localRepositoryPath;
 
     private boolean offline = false;
@@ -149,7 +149,7 @@ public class DefaultMavenExecutionRequest
     private int degreeOfConcurrency = 1;
 
     private String builderId = "singlethreaded";
-    
+
     private Map<String, List<ToolchainModel>> toolchains;
 
     /**
@@ -162,7 +162,7 @@ public class DefaultMavenExecutionRequest
     private boolean useLegacyLocalRepositoryManager = false;
 
     private Map<String, Object> data;
-    
+
     public DefaultMavenExecutionRequest()
     {
     }
@@ -534,8 +534,7 @@ public class DefaultMavenExecutionRequest
     {
         if ( properties != null )
         {
-            this.systemProperties = new Properties();
-            this.systemProperties.putAll( properties );
+            this.systemProperties = SystemProperties.copyProperties( properties );
         }
         else
         {
@@ -779,10 +778,7 @@ public class DefaultMavenExecutionRequest
     @Override
     public MavenExecutionRequest addProxy( Proxy proxy )
     {
-        if ( proxy == null )
-        {
-            throw new IllegalArgumentException( "proxy missing" );
-        }
+        Validate.notNull( proxy, "proxy cannot be null" );
 
         for ( Proxy p : getProxies() )
         {
@@ -825,10 +821,7 @@ public class DefaultMavenExecutionRequest
     @Override
     public MavenExecutionRequest addServer( Server server )
     {
-        if ( server == null )
-        {
-            throw new IllegalArgumentException( "server missing" );
-        }
+        Validate.notNull( server, "server cannot be null" );
 
         for ( Server p : getServers() )
         {
@@ -871,10 +864,7 @@ public class DefaultMavenExecutionRequest
     @Override
     public MavenExecutionRequest addMirror( Mirror mirror )
     {
-        if ( mirror == null )
-        {
-            throw new IllegalArgumentException( "mirror missing" );
-        }
+        Validate.notNull( mirror, "mirror cannot be null" );
 
         for ( Mirror p : getMirrors() )
         {
@@ -1030,13 +1020,13 @@ public class DefaultMavenExecutionRequest
 
         return this;
     }
-    
+
     @Override
     public File getGlobalToolchainsFile()
     {
         return globalToolchainsFile;
     }
-    
+
     @Override
     public MavenExecutionRequest setGlobalToolchainsFile( File globalToolchainsFile )
     {
@@ -1096,7 +1086,7 @@ public class DefaultMavenExecutionRequest
         return pluginArtifactRepositories;
     }
 
-    // TODO: this does not belong here.
+    // TODO this does not belong here.
     @Override
     public ProjectBuildingRequest getProjectBuildingRequest()
     {
@@ -1121,10 +1111,7 @@ public class DefaultMavenExecutionRequest
     @Override
     public MavenExecutionRequest addProfile( Profile profile )
     {
-        if ( profile == null )
-        {
-            throw new IllegalArgumentException( "profile missing" );
-        }
+        Validate.notNull( profile, "profile cannot be null" );
 
         for ( Profile p : getProfiles() )
         {
@@ -1243,7 +1230,7 @@ public class DefaultMavenExecutionRequest
     {
         return builderId;
     }
-    
+
     @Override
     public Map<String, List<ToolchainModel>> getToolchains()
     {
@@ -1272,7 +1259,7 @@ public class DefaultMavenExecutionRequest
     {
         return multiModuleProjectDirectory;
     }
-        
+
     @Override
     public MavenExecutionRequest setEventSpyDispatcher( EventSpyDispatcher eventSpyDispatcher )
     {
@@ -1285,13 +1272,13 @@ public class DefaultMavenExecutionRequest
     {
         return eventSpyDispatcher;
     }
-    
+
     @Override
     public Map<String, Object> getData()
     {
         if ( data == null )
         {
-            data = Maps.newHashMap();
+            data = new HashMap<>();
         }
 
         return data;

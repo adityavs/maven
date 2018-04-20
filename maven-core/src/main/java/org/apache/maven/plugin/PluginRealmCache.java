@@ -40,12 +40,24 @@ import org.eclipse.aether.repository.RemoteRepository;
  */
 public interface PluginRealmCache
 {
-
-    static class CacheRecord
+    /**
+     * CacheRecord
+     */
+    class CacheRecord
     {
-        public final ClassRealm realm;
+        public ClassRealm getRealm()
+        {
+            return realm;
+        }
 
-        public final List<Artifact> artifacts;
+        public List<Artifact> getArtifacts()
+        {
+            return artifacts;
+        }
+
+        private final ClassRealm realm;
+
+        private final List<Artifact> artifacts;
 
         public CacheRecord( ClassRealm realm, List<Artifact> artifacts )
         {

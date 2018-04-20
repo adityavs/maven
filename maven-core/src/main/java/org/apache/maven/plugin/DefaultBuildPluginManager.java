@@ -37,9 +37,12 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
 
-// TODO: the antrun plugin has its own configurator, the only plugin that does. might need to think about how that works
-// TODO: remove the coreArtifactFilterManager
+// TODO the antrun plugin has its own configurator, the only plugin that does. might need to think about how that works
+// TODO remove the coreArtifactFilterManager
 
+/**
+ * DefaultBuildPluginManager
+ */
 @Component( role = BuildPluginManager.class )
 public class DefaultBuildPluginManager
     implements BuildPluginManager

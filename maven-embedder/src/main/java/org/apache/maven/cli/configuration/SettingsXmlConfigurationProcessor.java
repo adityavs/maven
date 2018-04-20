@@ -47,6 +47,9 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.slf4j.Logger;
 
+/**
+ * SettingsXmlConfigurationProcessor
+ */
 @Component( role = ConfigurationProcessor.class, hint = SettingsXmlConfigurationProcessor.HINT )
 public class SettingsXmlConfigurationProcessor
     implements ConfigurationProcessor
@@ -59,8 +62,8 @@ public class SettingsXmlConfigurationProcessor
 
     public static final File DEFAULT_USER_SETTINGS_FILE = new File( USER_MAVEN_CONFIGURATION_HOME, "settings.xml" );
 
-    public static final File DEFAULT_GLOBAL_SETTINGS_FILE = new File( System.getProperty( "maven.home", System
-        .getProperty( "user.dir", "" ) ), "conf/settings.xml" );
+    public static final File DEFAULT_GLOBAL_SETTINGS_FILE =
+        new File( System.getProperty( "maven.conf" ), "settings.xml" );
 
     @Requirement
     private Logger logger;

@@ -25,6 +25,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.project.MavenProject;
 
@@ -49,15 +50,11 @@ class FilteredProjectDependencyGraph
      * @param projectDependencyGraph The project dependency graph to create a sub view from, must not be {@code null}.
      * @param whiteList The projects on which the dependency view should focus, must not be {@code null}.
      */
-    public FilteredProjectDependencyGraph( ProjectDependencyGraph projectDependencyGraph,
-                                           Collection<? extends MavenProject> whiteList )
+    FilteredProjectDependencyGraph( ProjectDependencyGraph projectDependencyGraph,
+                                    Collection<? extends MavenProject> whiteList )
     {
-        if ( projectDependencyGraph == null )
-        {
-            throw new IllegalArgumentException( "project dependency graph missing" );
-        }
-
-        this.projectDependencyGraph = projectDependencyGraph;
+        this.projectDependencyGraph =
+            Validate.notNull( projectDependencyGraph, "projectDependencyGraph cannot be null" );
 
         this.whiteList = new IdentityHashMap<MavenProject, Object>();
 
@@ -65,6 +62,14 @@ class FilteredProjectDependencyGraph
         {
             this.whiteList.put( project, null );
         }
+    }
+
+    /**
+     * @since 3.5.0
+     */
+    public List<MavenProject> getAllProjects()
+    {
+        return this.projectDependencyGraph.getAllProjects();
     }
 
     public List<MavenProject> getSortedProjects()

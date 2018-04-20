@@ -34,7 +34,7 @@ import org.codehaus.plexus.util.introspection.ReflectionValueExtractor;
 
 /**
  * Evaluator for plugin parameters expressions. Content surrounded by <code>${</code> and <code>}</code> is evaluated.
- * Recognized values are:<table border="1">
+ * Recognized values are:<table border="1" summary="Expression matrix">
  * <tr><th>expression</th>                     <th></th>               <th>evaluation result</th></tr>
  * <tr><td><code>session</code></td>           <td></td>               <td>the actual {@link MavenSession}</td></tr>
  * <tr><td><code>session.*</code></td>         <td>(since Maven 3)</td><td></td></tr>
@@ -83,7 +83,7 @@ public class PluginParameterExpressionEvaluator
 
     private Properties properties;
 
-    @Deprecated //TODO: used by the Enforcer plugin
+    @Deprecated //TODO used by the Enforcer plugin
     public PluginParameterExpressionEvaluator( MavenSession session, MojoExecution mojoExecution,
                                                PathTranslator pathTranslator, Logger logger, MavenProject project,
                                                Properties properties )
@@ -144,6 +144,7 @@ public class PluginParameterExpressionEvaluator
     }
 
     @Override
+    @SuppressWarnings( "checkstyle:methodlength" )
     public Object evaluate( String expr, Class<?> type )
         throws ExpressionEvaluationException
     {
@@ -160,7 +161,7 @@ public class PluginParameterExpressionEvaluator
             int index = expr.indexOf( "${" );
             if ( index >= 0 )
             {
-                int lastIndex = expr.indexOf( "}", index );
+                int lastIndex = expr.indexOf( '}', index );
                 if ( lastIndex >= 0 )
                 {
                     String retVal = expr.substring( 0, index );
@@ -213,7 +214,7 @@ public class PluginParameterExpressionEvaluator
         {
             try
             {
-                int pathSeparator = expression.indexOf( "/" );
+                int pathSeparator = expression.indexOf( '/' );
 
                 if ( pathSeparator > 0 )
                 {
@@ -228,7 +229,7 @@ public class PluginParameterExpressionEvaluator
             }
             catch ( Exception e )
             {
-                // TODO: don't catch exception
+                // TODO don't catch exception
                 throw new ExpressionEvaluationException( "Error evaluating plugin parameter expression: " + expression,
                                                          e );
             }
@@ -253,7 +254,7 @@ public class PluginParameterExpressionEvaluator
         {
             try
             {
-                int pathSeparator = expression.indexOf( "/" );
+                int pathSeparator = expression.indexOf( '/' );
 
                 if ( pathSeparator > 0 )
                 {
@@ -268,7 +269,7 @@ public class PluginParameterExpressionEvaluator
             }
             catch ( Exception e )
             {
-                // TODO: don't catch exception
+                // TODO don't catch exception
                 throw new ExpressionEvaluationException( "Error evaluating plugin parameter expression: " + expression,
                                                          e );
             }
@@ -285,7 +286,7 @@ public class PluginParameterExpressionEvaluator
         {
             try
             {
-                int pathSeparator = expression.indexOf( "/" );
+                int pathSeparator = expression.indexOf( '/' );
 
                 if ( pathSeparator > 0 )
                 {
@@ -300,7 +301,7 @@ public class PluginParameterExpressionEvaluator
             }
             catch ( Exception e )
             {
-                // TODO: don't catch exception
+                // TODO don't catch exception
                 throw new ExpressionEvaluationException( "Error evaluating plugin parameter expression: " + expression,
                                                          e );
             }
@@ -313,7 +314,7 @@ public class PluginParameterExpressionEvaluator
         {
             try
             {
-                int pathSeparator = expression.indexOf( "/" );
+                int pathSeparator = expression.indexOf( '/' );
 
                 PluginDescriptor pluginDescriptor = mojoDescriptor.getPluginDescriptor();
 
@@ -342,7 +343,7 @@ public class PluginParameterExpressionEvaluator
         {
             try
             {
-                int pathSeparator = expression.indexOf( "/" );
+                int pathSeparator = expression.indexOf( '/' );
 
                 if ( pathSeparator > 0 )
                 {
@@ -357,7 +358,7 @@ public class PluginParameterExpressionEvaluator
             }
             catch ( Exception e )
             {
-                // TODO: don't catch exception
+                // TODO don't catch exception
                 throw new ExpressionEvaluationException( "Error evaluating plugin parameter expression: " + expression,
                                                          e );
             }
@@ -368,7 +369,7 @@ public class PluginParameterExpressionEvaluator
         }
         else if ( expression.startsWith( "basedir" ) )
         {
-            int pathSeparator = expression.indexOf( "/" );
+            int pathSeparator = expression.indexOf( '/' );
 
             if ( pathSeparator > 0 )
             {
@@ -412,7 +413,7 @@ public class PluginParameterExpressionEvaluator
 
         if ( value instanceof String )
         {
-            // TODO: without #, this could just be an evaluate call...
+            // TODO without #, this could just be an evaluate call...
 
             String val = (String) value;
 
@@ -447,7 +448,7 @@ public class PluginParameterExpressionEvaluator
 
     private String stripTokens( String expr )
     {
-        if ( expr.startsWith( "${" ) && ( expr.indexOf( "}" ) == expr.length() - 1 ) )
+        if ( expr.startsWith( "${" ) && ( expr.indexOf( '}' ) == expr.length() - 1 ) )
         {
             expr = expr.substring( 2, expr.length() - 1 );
         }
@@ -457,7 +458,7 @@ public class PluginParameterExpressionEvaluator
     @Override
     public File alignToBaseDirectory( File file )
     {
-        // TODO: Copied from the DefaultInterpolator. We likely want to resurrect the PathTranslator or at least a
+        // TODO Copied from the DefaultInterpolator. We likely want to resurrect the PathTranslator or at least a
         // similar component for re-usage
         if ( file != null )
         {

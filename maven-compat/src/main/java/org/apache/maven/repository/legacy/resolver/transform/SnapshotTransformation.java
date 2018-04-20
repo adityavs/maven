@@ -22,6 +22,7 @@ package org.apache.maven.repository.legacy.resolver.transform;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import org.apache.maven.artifact.Artifact;
@@ -46,11 +47,11 @@ import org.codehaus.plexus.util.StringUtils;
 public class SnapshotTransformation
     extends AbstractVersionTransformation
 {
+    private static final String DEFAULT_SNAPSHOT_TIMESTAMP_FORMAT = "yyyyMMdd.HHmmss";
+
+    private static final TimeZone DEFAULT_SNAPSHOT_TIME_ZONE = TimeZone.getTimeZone( "Etc/UTC" );
+
     private String deploymentTimestamp;
-
-    private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone( "UTC" );
-
-    private static final String UTC_TIMESTAMP_PATTERN = "yyyyMMdd.HHmmss";
 
     public void transformForResolve( Artifact artifact, RepositoryRequest request )
         throws ArtifactResolutionException
@@ -163,8 +164,9 @@ public class SnapshotTransformation
 
     public static DateFormat getUtcDateFormatter()
     {
-        DateFormat utcDateFormatter = new SimpleDateFormat( UTC_TIMESTAMP_PATTERN );
-        utcDateFormatter.setTimeZone( UTC_TIME_ZONE );
+        DateFormat utcDateFormatter = new SimpleDateFormat( DEFAULT_SNAPSHOT_TIMESTAMP_FORMAT );
+        utcDateFormatter.setCalendar( new GregorianCalendar() );
+        utcDateFormatter.setTimeZone( DEFAULT_SNAPSHOT_TIME_ZONE );
         return utcDateFormatter;
     }
 

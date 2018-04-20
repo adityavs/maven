@@ -21,6 +21,7 @@ package org.apache.maven.project;
 
 import java.util.List;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.building.AbstractModelBuildingListener;
@@ -54,23 +55,10 @@ public class DefaultModelBuildingListener
     public DefaultModelBuildingListener( MavenProject project, ProjectBuildingHelper projectBuildingHelper,
                                          ProjectBuildingRequest projectBuildingRequest )
     {
-        if ( project == null )
-        {
-            throw new IllegalArgumentException( "project missing" );
-        }
-        this.project = project;
-
-        if ( projectBuildingHelper == null )
-        {
-            throw new IllegalArgumentException( "project building helper missing" );
-        }
-        this.projectBuildingHelper = projectBuildingHelper;
-
-        if ( projectBuildingRequest == null )
-        {
-            throw new IllegalArgumentException( "project building request missing" );
-        }
-        this.projectBuildingRequest = projectBuildingRequest;
+        this.project = Validate.notNull( project, "project cannot be null" );
+        this.projectBuildingHelper = Validate.notNull( projectBuildingHelper, "projectBuildingHelper cannot be null" );
+        this.projectBuildingRequest =
+            Validate.notNull( projectBuildingRequest, "projectBuildingRequest cannot be null" );
         this.remoteRepositories = projectBuildingRequest.getRemoteRepositories();
         this.pluginRepositories = projectBuildingRequest.getPluginArtifactRepositories();
     }
@@ -111,8 +99,8 @@ public class DefaultModelBuildingListener
                 ProjectRealmCache.CacheRecord record =
                     projectBuildingHelper.createProjectRealm( project, model, projectBuildingRequest );
 
-                project.setClassRealm( record.realm );
-                project.setExtensionDependencyFilter( record.extensionArtifactFilter );
+                project.setClassRealm( record.getRealm() );
+                project.setExtensionDependencyFilter( record.getExtensionArtifactFilter() );
             }
             catch ( PluginResolutionException | PluginManagerException | PluginVersionResolutionException e )
             {

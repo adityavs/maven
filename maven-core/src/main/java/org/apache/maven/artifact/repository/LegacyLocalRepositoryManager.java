@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.metadata.ArtifactMetadata;
 import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
@@ -88,11 +89,7 @@ public class LegacyLocalRepositoryManager
 
     private LegacyLocalRepositoryManager( ArtifactRepository delegate )
     {
-        if ( delegate == null )
-        {
-            throw new IllegalArgumentException( "local repository delegate missing" );
-        }
-        this.delegate = delegate;
+        this.delegate = Validate.notNull( delegate, "delegate cannot be null" );
 
         ArtifactRepositoryLayout layout = delegate.getLayout();
         repo =
@@ -200,7 +197,7 @@ public class LegacyLocalRepositoryManager
 
         private final Metadata metadata;
 
-        public ArtifactMetadataAdapter( Metadata metadata )
+        ArtifactMetadataAdapter( Metadata metadata )
         {
             this.metadata = metadata;
         }
@@ -294,7 +291,7 @@ public class LegacyLocalRepositoryManager
 
         private final RemoteRepository repository;
 
-        public ArtifactRepositoryAdapter( RemoteRepository repository )
+        ArtifactRepositoryAdapter( RemoteRepository repository )
         {
             this.repository = repository;
         }

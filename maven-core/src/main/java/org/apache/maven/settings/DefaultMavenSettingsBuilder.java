@@ -66,7 +66,7 @@ public class DefaultMavenSettingsBuilder
         throws IOException, XmlPullParserException
     {
         File globalSettingsFile =
-            getFile( "${maven.home}/conf/settings.xml", "maven.home",
+            getFile( "${maven.conf}/settings.xml", "maven.conf",
                      MavenSettingsBuilder.ALT_GLOBAL_SETTINGS_XML_LOCATION );
 
         SettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
@@ -127,7 +127,7 @@ public class DefaultMavenSettingsBuilder
 
         if ( StringUtils.isEmpty( path ) )
         {
-            // TODO: This replacing shouldn't be necessary as user.home should be in the
+            // TODO This replacing shouldn't be necessary as user.home should be in the
             // context of the container and thus the value would be interpolated by Plexus
             String basedir = System.getProperty( basedirSysProp );
             if ( basedir == null )

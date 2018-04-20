@@ -39,6 +39,8 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.eclipse.aether.RepositorySystemSession;
 
 /**
+ * A Maven execution session.
+ *
  * @author Jason van Zyl
  */
 public class MavenSession
@@ -320,6 +322,7 @@ public class MavenSession
     }
 
     @Deprecated
+    @SuppressWarnings( "checkstyle:parameternumber" )
     public MavenSession( PlexusContainer container, Settings settings, ArtifactRepository localRepository,
                          EventDispatcher eventDispatcher, ReactorManager unused, List<String> goals,
                          String executionRootDir, Properties executionProperties, Date startTime )
@@ -329,6 +332,7 @@ public class MavenSession
     }
 
     @Deprecated
+    @SuppressWarnings( "checkstyle:parameternumber" )
     public MavenSession( PlexusContainer container, Settings settings, ArtifactRepository localRepository,
                          EventDispatcher eventDispatcher, ReactorManager unused, List<String> goals,
                          String executionRootDir, Properties executionProperties, Properties userProperties,

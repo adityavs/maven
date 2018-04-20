@@ -32,6 +32,9 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 
+/**
+ * ResolutionNode
+ */
 public class ResolutionNode
 {
     private Artifact artifact;
@@ -108,7 +111,7 @@ public class ResolutionNode
     }
 
     /**
-     * @return {@link List} &lt; {@link String} > with artifact ids
+     * @return {@link List} &lt; {@link String} &gt; with artifact ids
      * @throws OverConstrainedVersionException
      */
     public List<String> getDependencyTrail()
@@ -198,7 +201,7 @@ public class ResolutionNode
     {
         active = true;
 
-        // TODO: if it was null, we really need to go find them now... or is this taken care of by the ordering?
+        // TODO if it was null, we really need to go find them now... or is this taken care of by the ordering?
         if ( children != null )
         {
             for ( ResolutionNode node : children )

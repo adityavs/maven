@@ -43,8 +43,8 @@
   |   definition of these types
   |
 -->
-<model xmlns="http://modello.codehaus.org/MODELLO/1.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://modello.codehaus.org/MODELLO/1.4.0 http://modello.codehaus.org/xsd/modello-1.4.0.xsd"
+<model xmlns="http://codehaus-plexus.github.io/MODELLO/1.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://codehaus-plexus.github.io/MODELLO/1.4.0 http://codehaus-plexus.github.io/modello/xsd/modello-1.4.0.xsd"
   xml.namespace="http://maven.apache.org/POM/${version}"
   xml.schemaLocation="http://maven.apache.org/xsd/maven-${version}.xsd">
   <id>maven</id>
@@ -54,8 +54,8 @@
     <p>This is a reference for the Maven project descriptor used in Maven.</p>
     <p>An XSD is available at:</p>
     <ul>
-      <li><a href="http://maven.apache.org/xsd/maven-v3_0_0.xsd">http://maven.apache.org/xsd/maven-v3_0_0.xsd</a> for Maven 1.1.</li>
-      <li><a href="http://maven.apache.org/xsd/maven-4.0.0.xsd">http://maven.apache.org/xsd/maven-4.0.0.xsd</a> for Maven 2.0.</li>
+      <li><a href="https://maven.apache.org/xsd/maven-v3_0_0.xsd">https://maven.apache.org/xsd/maven-v3_0_0.xsd</a> for Maven 1.1.</li>
+      <li><a href="https://maven.apache.org/xsd/maven-4.0.0.xsd">https://maven.apache.org/xsd/maven-4.0.0.xsd</a> for Maven 2.0.</li>
     </ul>
     ]]>
   </description>
@@ -83,18 +83,6 @@
         <!-- ====================================================================== -->
 
         <field>
-          <name>pomVersion</name>
-          <version>3.0.0</version>
-          <required>true</required>
-          <type>String</type>
-          <description>
-            <![CDATA[
-            Declares to which version of project descriptor this POM conforms.
-            The only valid value is <code>3</code>.
-            ]]>
-          </description>
-        </field>
-        <field>
           <name>modelVersion</name>
           <version>4.0.0+</version>
           <required>true</required>
@@ -106,20 +94,6 @@
         <!-- Parent Model                                                           -->
         <!-- ====================================================================== -->
 
-        <field xdoc.separator="blank">
-          <name>extend</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            The location of the parent project, if one exists. Values from the
-            parent project will be the default for this project if they are
-            left unspecified. The path may be absolute, or relative to the
-            current <code>project.xml</code> file. For example,
-            <code>&lt;extend&gt;${basedir}/../project.xml&lt;/extend&gt;</code>.
-            ]]>
-          </description>
-          <type>String</type>
-        </field>
         <field xdoc.separator="blank">
           <name>parent</name>
           <version>4.0.0+</version>
@@ -159,39 +133,11 @@
           <type>String</type>
         </field>
         <field>
-          <name>id</name>
-          <version>3.0.0</version>
-          <required>true</required>
-          <description>
-            <![CDATA[
-            <b>Deprecated</b>. When used, this sets both the <code>groupId</code>
-            and <code>artifactId</code> elements if they were previously empty.
-            ]]>
-          </description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>currentVersion</name>
-          <description>The current version of the artifact produced by this project.</description>
-          <version>3.0.0</version>
-          <required>true</required>
-          <type>String</type>
-        </field>
-        <field>
           <name>version</name>
           <version>4.0.0+</version>
           <required>true</required>
           <description>The current version of the artifact produced by this project.</description>
           <type>String</type>
-        </field>
-        <field>
-          <name>versions</name>
-          <version>3.0.0</version>
-          <description>Contains information on previous versions of the project.</description>
-          <association>
-            <type>Version</type>
-            <multiplicity>*</multiplicity>
-          </association>
         </field>
         <field>
           <name>packaging</name>
@@ -223,13 +169,6 @@
           <type>String</type>
         </field>
         <field>
-          <name>shortDescription</name>
-          <version>3.0.0</version>
-          <description>A short description of the project. The short description should be limited
-            to a single line.</description>
-          <type>String</type>
-        </field>
-        <field>
           <name>description</name>
           <version>3.0.0+</version>
           <description>A detailed description of the project, used by Maven whenever it needs to
@@ -245,23 +184,9 @@
           <description>
             <![CDATA[
             The URL to the project's homepage.
-            <br /><b>Default value is</b>: parent value [+ path adjustment] + artifactId
+            <br><b>Default value is</b>: parent value [+ path adjustment] + (artifactId or <code>project.directory</code> property)
             ]]>
           </description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>siteAddress</name>
-          <version>3.0.0</version>
-          <description>The hostname of the web server that hosts the project's web site. This is
-            used when the web site is deployed.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>siteDirectory</name>
-          <version>3.0.0</version>
-          <description>The directory on the web server where the public web site for this project
-            resides. This is used when the web site is deployed.</description>
           <type>String</type>
         </field>
         <field>
@@ -270,20 +195,6 @@
           <required>true</required>
           <description>The year of the project's inception, specified with 4 digits. This value is
             used when generating copyright notices as well as being informational.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>logo</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            The URL of the project's logo image.  This can be an URL relative
-            to the base directory of the generated web site,
-            (e.g., <code>/images/project-logo.png</code>) or an absolute URL
-            (e.g., <code>http://my.corp/project-logo.png</code>). This is used
-            when generating the project documentation.
-            ]]>
-          </description>
           <type>String</type>
         </field>
         <field>
@@ -361,27 +272,6 @@
         <!-- SCM                                                                    -->
         <!-- ====================================================================== -->
 
-        <field xdoc.separator="blank">
-          <name>branches</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            Contains information on SCM branches of the project.
-            ]]>
-          </description>
-          <association>
-            <type>Branch</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field>
-          <name>repository</name>
-          <version>3.0.0</version>
-          <description>Specification for the SCM used by the project, such as CVS, Subversion, etc.</description>
-          <association>
-            <type>Repository</type>
-          </association>
-        </field>
         <field xdoc.separator="blank" xml.insertParentFieldsUpTo="modules">
           <name>scm</name>
           <version>4.0.0+</version>
@@ -395,12 +285,6 @@
         <!-- Issue Tracking                                                         -->
         <!-- ====================================================================== -->
 
-        <field xdoc.separator="blank">
-          <name>issueTrackingUrl</name>
-          <version>3.0.0</version>
-          <description>The URL of the project's issue tracking system.</description>
-          <type>String</type>
-        </field>
         <field>
           <name>issueManagement</name>
           <version>4.0.0+</version>
@@ -415,95 +299,12 @@
         <!-- ====================================================================== -->
 
         <field>
-          <name>gumpRepositoryId</name>
-          <version>3.0.0</version>
-          <description>This is the repository identifier in Gump that this project is part of.</description>
-          <type>String</type>
-        </field>
-        <field>
           <name>ciManagement</name>
           <version>4.0.0+</version>
           <description>The project's continuous integration information.</description>
           <association>
             <type>CiManagement</type>
           </association>
-        </field>
-
-        <!-- ====================================================================== -->
-        <!-- Distribution Management                                                -->
-        <!-- ====================================================================== -->
-
-        <field>
-          <name>distributionSite</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            The server where the final distributions will be published. This is used when the
-            distributions are deployed. If this isn't defined, the central repository is used instead as
-            determined by <code>maven.repo.central</code> and <code>maven.repo.central.directory</code>.
-            ]]>
-          </description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>distributionDirectory</name>
-          <version>3.0.0</version>
-          <description>The directory on the web server where the final distributions will be
-            published. This is used when the distributions are deployed.</description>
-          <type>String</type>
-        </field>
-
-        <!-- ====================================================================== -->
-        <!-- Specific version 3                                                     -->
-        <!-- ====================================================================== -->
-
-        <field>
-          <name>packageGroups</name>
-          <version>3.0.0</version>
-          <description>Package groups required for complete javadocs.</description>
-          <association>
-            <type>PackageGroup</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field>
-          <name>reports</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            This element includes the specification of reports to be
-            included in a Maven-generated site.  These reports will be run
-            when a user executes <code>maven site</code>.  All of the
-            reports will be included in the navigation bar for browsing in
-            the order they are specified.
-            ]]>
-          </description>
-          <association>
-            <type>String</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field>
-          <name>properties</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            Project properties that will be used by various plugins.
-            The format is <code>&lt;name&gt;value&lt;/name&gt;</code>.
-            ]]>
-          </description>
-          <type>Properties</type>
-          <association xml.mapStyle="inline">
-            <type>String</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field xml.tagName="package">
-          <name>packageName</name>
-          <version>3.0.0</version>
-          <type>String</type>
-          <description>The Java package name of the project. This value is used when generating
-            JavaDoc.</description>
         </field>
 
         <!-- ====================================================================== -->
@@ -536,33 +337,6 @@
         </field>
       </fields>
       <codeSegments>
-        <codeSegment>
-          <version>3.0.0</version>
-          <code>
-            <![CDATA[
-              public void setVersion(String version)
-              {
-                  this.currentVersion = version;
-              }
-
-              public String getVersion()
-              {
-                  return currentVersion;
-              }
-
-              /* We need this because we can't use package as a field name.*/
-              public void setPackage(String packageName)
-              {
-                  this.packageName = packageName;
-              }
-
-              public String getPackage()
-              {
-                  return packageName;
-              }
-            ]]>
-          </code>
-        </codeSegment>
         <codeSegment>
           <version>4.0.0+</version>
           <code>
@@ -701,7 +475,7 @@
             These dependencies are used to construct a classpath for your
             project during the build process. They are automatically downloaded from the
             repositories defined in this project.
-            See <a href="http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html">the
+            See <a href="https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html">the
             dependency mechanism</a> for more information.
             ]]>
           </description>
@@ -754,21 +528,6 @@
           <association>
             <type>Reporting</type>
           </association>
-        </field>
-      </fields>
-    </class>
-    <class>
-      <name>Branch</name>
-      <version>3.0.0</version>
-      <description>Contains information on the SCM branches of the project.</description>
-      <fields>
-        <field>
-          <name>tag</name>
-          <version>3.0.0</version>
-          <required>true</required>
-          <description>The branch tag in the version control system (e.g. cvs) used by the project
-            for the source code associated with this branch of the project.</description>
-          <type>String</type>
         </field>
       </fields>
     </class>
@@ -868,9 +627,12 @@
         <field>
           <name>resources</name>
           <version>3.0.0+</version>
-          <description>This element describes all of the classpath resources such as properties
+          <description><![CDATA[
+            This element describes all of the classpath resources such as properties
             files associated with a project. These resources are often included in the final
-            package.</description>
+            package.
+            The default value is <code>src/main/resources</code>.]]>
+          </description>
           <association>
             <type>Resource</type>
             <multiplicity>*</multiplicity>
@@ -879,8 +641,11 @@
         <field>
           <name>testResources</name>
           <version>4.0.0+</version>
-          <description>This element describes all of the classpath resources such as properties
-            files associated with a project's unit tests.</description>
+          <description><![CDATA[
+            This element describes all of the classpath resources such as properties
+            files associated with a project's unit tests.
+            The default value is <code>src/test/resources</code>.]]>
+          </description>
           <association>
             <type>Resource</type>
             <multiplicity>*</multiplicity>
@@ -889,7 +654,10 @@
         <field>
           <name>directory</name>
           <version>4.0.0+</version>
-          <description>The directory where all files generated by the build are placed.</description>
+          <description><![CDATA[
+            The directory where all files generated by the build are placed.
+            The default value is <code>target</code>.]]>
+          </description>
           <type>String</type>
         </field>
         <field>
@@ -922,110 +690,63 @@
       <description>
         <![CDATA[
         The <code>&lt;build&gt;</code> element contains informations required to build the project.
+        Default values are defined in Super POM.
         ]]>
       </description>
       <fields>
         <field>
-          <name>nagEmailAddress</name>
-          <version>3.0.0</version>
-          <description>An address to which notifications regarding the status of builds for this
-            project can be sent. This is intended for use by tools which do unattended builds, for
-            example those providing for continuous integration.</description>
-          <type>String</type>
-        </field>
-        <field>
           <name>sourceDirectory</name>
           <version>3.0.0+</version>
           <required>true</required>
-          <description>This element specifies a directory containing the source of the project. The
-            generated build system will compile the source in this directory when the project is
-            built. The path given is relative to the project descriptor.</description>
+          <description><![CDATA[
+            This element specifies a directory containing the source of the project. The
+            generated build system will compile the sources from this directory when the project is
+            built. The path given is relative to the project descriptor.
+            The default value is <code>src/main/java</code>.]]>
+          </description>
           <type>String</type>
         </field>
         <field>
           <name>scriptSourceDirectory</name>
           <version>4.0.0+</version>
           <required>true</required>
-          <description>This element specifies a directory containing the script sources of the
+          <description><![CDATA[
+            This element specifies a directory containing the script sources of the
             project. This directory is meant to be different from the sourceDirectory, in that its
             contents will be copied to the output directory in most cases (since scripts are
-            interpreted rather than compiled).</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>unitTestSourceDirectory</name>
-          <version>3.0.0</version>
-          <required>true</required>
-          <description>This element specifies a directory containing the unit test source of the
-            project. The generated build system will compile these directories when the project is
-            being tested. The path given is relative to the project descriptor.</description>
+            interpreted rather than compiled).
+            The default value is <code>src/main/scripts</code>.]]>
+          </description>
           <type>String</type>
         </field>
         <field>
           <name>testSourceDirectory</name>
           <version>4.0.0+</version>
           <required>true</required>
-          <description>This element specifies a directory containing the unit test source of the
+          <description><![CDATA[
+            This element specifies a directory containing the unit test source of the
             project. The generated build system will compile these directories when the project is
-            being tested. The path given is relative to the project descriptor.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>aspectSourceDirectory</name>
-          <version>3.0.0</version>
-          <description>This element specifies a directory containing Aspect sources of the project.
-            The generated build system will compile the Aspects in this directory when the project
-            is built if Aspects have been enabled. The path given is relative to the project
-            descriptor.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>integrationUnitTestSourceDirectory</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            This element is <b>deprecated</b> and should no longer be used.
-            Initially it was used by the first Cactus plugin. Now
-            the location of the Cactus test sources is defined
-            through a plugin property. See the Cactus plugin
-            <a href="http://jakarta.apache.org/cactus/integration/maven/properties.html">properties</a>
-            page.
-            ]]>
+            being tested. The path given is relative to the project descriptor.
+            The default value is <code>src/test/java</code>.]]>
           </description>
           <type>String</type>
         </field>
         <field>
-          <name>sourceModifications</name>
-          <version>3.0.0</version>
-          <required>true</required>
-          <description>This element describes all of the sourceModifications associated with a
-            project. These modifications are used to exclude or include various source depending on
-            the environment the build is running in.</description>
-          <association>
-            <type>SourceModification</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field>
-          <name>unitTest</name>
-          <version>3.0.0</version>
-          <required>true</required>
-          <description>This element specifies unit tests associated with the project.</description>
-          <defaultValue>new UnitTest()</defaultValue>
-          <association>
-            <type>UnitTest</type>
-          </association>
-        </field>
-        <field>
           <name>outputDirectory</name>
           <version>4.0.0+</version>
-          <description>The directory where compiled application classes are placed.</description>
+          <description><![CDATA[
+            The directory where compiled application classes are placed.
+            The default value is <code>target/classes</code>.]]>
+          </description>
           <type>String</type>
         </field>
         <field>
           <name>testOutputDirectory</name>
           <version>4.0.0+</version>
-          <description>The directory where compiled test classes are placed.</description>
+          <description><![CDATA[
+            The directory where compiled test classes are placed.
+            The default value is <code>target/test-classes</code>.]]>
+          </description>
           <type>String</type>
         </field>
         <field>
@@ -1229,18 +950,6 @@
       </description>
       <fields>
         <field>
-          <name>id</name>
-          <version>3.0.0</version>
-          <required>true</required>
-          <description>
-            <![CDATA[
-            <b>Deprecated</b>. Please use <code>groupId</code> and
-            <code>artifactId</code> together instead.
-            ]]>
-          </description>
-          <type>String</type>
-        </field>
-        <field>
           <name>groupId</name>
           <version>3.0.0+</version>
           <required>true</required>
@@ -1276,36 +985,6 @@
           <type>String</type>
         </field>
         <field>
-          <name>url</name>
-          <version>3.0.0</version>
-          <description>This url will be provided to the user if the jar file cannot be downloaded
-            from the central repository.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>jar</name>
-          <version>3.0.0</version>
-          <description>Literal name of the artifact in the repository. Used to override the
-            calculated artifact name.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>type</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            The type of dependency. While it
-            usually represents the extension on the filename of the dependency,
-            that is not always the case.
-            Some examples are <code>jar</code>, <code>war</code>, and <code>plugin</code>.
-            A dependency of type <code>plugin</code> is loaded as a Maven plugin and
-            not added to the project build classpath.
-            ]]>
-          </description>
-          <type>String</type>
-          <defaultValue>jar</defaultValue>
-        </field>
-        <field>
           <name>type</name>
           <version>4.0.0+</version>
           <description>
@@ -1334,7 +1013,7 @@
             The classifier of the dependency. It is appended to
             the filename after the version. This allows:
             <ul>
-            <li>refering to attached artifact, for example <code>sources</code> and <code>javadoc</code>:
+            <li>referring to attached artifact, for example <code>sources</code> and <code>javadoc</code>:
             see <a href="../maven-core/artifact-handlers.html">default artifact handlers</a> for a list,</li>
             <li>distinguishing two artifacts
             that belong to the same POM but were built differently.
@@ -1346,23 +1025,6 @@
           <required>false</required>
         </field>
         <field>
-          <name>properties</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            Properties about the dependency. Various plugins allow you to
-            mark dependencies with properties. For example the war plugin looks for a
-            <code>war.bundle</code> property, and if found will include the
-            dependency in <code>WEB-INF/lib</code>.
-            ]]>
-          </description>
-          <type>Properties</type>
-          <association xml.mapStyle="inline">
-            <type>String</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field>
           <name>scope</name>
           <version>4.0.0+</version>
           <description>
@@ -1372,8 +1034,8 @@
             calculate the various classpaths used for compilation, testing, and so on.
             It also assists in determining which artifacts to include in a distribution of
             this project. For more information, see
-            <a href="http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html">the
-            dependency mechanism</a>.
+            <a href="https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html">the
+            dependency mechanism</a>. The default scope is <code>compile</code>.
             ]]>
           </description>
           <type>String</type>
@@ -1425,20 +1087,6 @@
       </fields>
       <codeSegments>
         <codeSegment>
-          <version>3.0.0</version>
-          <code>
-            <![CDATA[
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString()
-    {
-        return groupId + "/" + type + "s:" + artifactId + "-" + version;
-    }
-            ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
           <version>4.0.0+</version>
           <code>
             <![CDATA[
@@ -1478,111 +1126,6 @@
             managementKey = groupId + ":" + artifactId + ":" + type + ( classifier != null ? ":" + classifier : "" );
         }
         return managementKey;
-    }
-            ]]>
-          </code>
-        </codeSegment>
-        <codeSegment>
-          <version>3.0.0</version>
-          <code>
-            <![CDATA[
-    /**
-     * @return the key as <code>id:type</code>
-     */
-    public String getKey()
-    {
-        return getId() + ":" + getType();
-    }
-
-    /**
-     * @return the groupId as artifact directory
-     */
-    public String getArtifactDirectory()
-    {
-        return getGroupId();
-    }
-
-    /**
-     * @return the artifact name as <code>artifactId-version.extension</code> if &lt;jar/&gt; not set
-     */
-    public String getArtifact()
-    {
-        // If the jar name has been explicty set then use that. This
-        // is when the <jar/> element is explicity used in the POM.
-        if ( getJar() != null)
-        {
-            return getJar();
-        }
-
-        String artifact;
-
-        if ("ejb-client".equals(getType())) {
-          artifact = getArtifactId() + "-" + getVersion() + "-client." + getExtension();
-        } else {
-          artifact = getArtifactId() + "-" + getVersion() + "." + getExtension();
-        }
-
-        return artifact;
-    }
-
-    public String getTypeDirectory()
-    {
-        String path;
-        if (getType().equals("ejb-client")) {
-            path = "ejbs";
-        } else {
-            path = getType() + "s";
-        }
-
-        return path;
-    }
-
-    public String getExtension()
-    {
-        if ("ejb".equals(getType()) || "ejb-client".equals(getType()) || "plugin".equals(getType()) || "aspect".equals(getType()) || "uberjar".equals(getType())) return "jar";
-        return getType();
-    }
-
-    public boolean isAddedToClasspath()
-    {
-        return ("jar".equals(getType()) || "ejb".equals(getType()) || "ejb-client".equals(getType()) || "sar".equals(getType()));
-    }
-
-    public boolean isPlugin()
-    {
-        return ("plugin".equals(getType()));
-    }
-
-    public String getProperty( String property )
-    {
-        return getProperties().getProperty( property );
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals( Object o )
-    {
-        if ( this == o )
-        {
-            return true;
-        }
-
-        if ( !( o instanceof Dependency ) )
-        {
-            return false;
-        }
-
-        Dependency d  = (Dependency) o;
-        return getId().equals( d.getId() );
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode()
-    {
-        return getId().hashCode();
     }
             ]]>
           </code>
@@ -1862,39 +1405,6 @@
           <description>The URL to the organization's home page.</description>
           <type>String</type>
         </field>
-        <field>
-          <name>logo</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            The URL to the organization's logo image.  This can be an URL relative
-            to the base directory of the generated web site,
-            (e.g., <code>/images/org-logo.png</code>) or an absolute URL
-            (e.g., <code>http://my.corp/logo.png</code>).  This value is used
-            when generating the project documentation.
-            ]]>
-          </description>
-          <type>String</type>
-        </field>
-      </fields>
-    </class>
-    <class>
-      <name>PackageGroup</name>
-      <version>3.0.0</version>
-      <description>A JavaDoc package group.</description>
-      <fields>
-        <field>
-          <name>title</name>
-          <version>3.0.0</version>
-          <description>The title to use for the package group.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>packages</name>
-          <version>3.0.0</version>
-          <description>The packages in the group</description>
-          <type>String</type>
-        </field>
       </fields>
     </class>
     <class java.clone="deep">
@@ -2052,50 +1562,6 @@
       </codeSegments>
 
     </class>
-    <class>
-      <name>Repository</name>
-      <version>3.0.0</version>
-      <description>
-        <![CDATA[
-        The <code>&lt;repository&gt;</code> element contains informations required to a repository
-        used by the project.
-        ]]>
-      </description>
-      <fields>
-        <field>
-          <name>connection</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            The source control management system URL
-            that describes the repository and how to connect to the
-            repository. For more information, see the
-            <a href="http://maven.apache.org/scm/scm-url-format.html">URL format</a>
-            and <a href="http://maven.apache.org/scm/scms-overview.html">list of supported SCMs</a>.
-            This connection is read-only.
-            ]]>
-          </description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>developerConnection</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            Just like <code>connection</code>, but for developers, i.e. this scm connection
-            will not be read only.
-            ]]>
-          </description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>url</name>
-          <version>3.0.0</version>
-          <description>The URL to the project's browsable SCM repository, such as ViewVC or Fisheye.</description>
-          <type>String</type>
-        </field>
-      </fields>
-    </class>
     <class java.clone="deep">
       <name>Scm</name>
       <version>4.0.0+</version>
@@ -2114,10 +1580,10 @@
             The source control management system URL
             that describes the repository and how to connect to the
             repository. For more information, see the
-            <a href="http://maven.apache.org/scm/scm-url-format.html">URL format</a>
-            and <a href="http://maven.apache.org/scm/scms-overview.html">list of supported SCMs</a>.
+            <a href="https://maven.apache.org/scm/scm-url-format.html">URL format</a>
+            and <a href="https://maven.apache.org/scm/scms-overview.html">list of supported SCMs</a>.
             This connection is read-only.
-            <br /><b>Default value is</b>: parent value [+ path adjustment] + artifactId
+            <br><b>Default value is</b>: parent value [+ path adjustment] + (artifactId or <code>project.directory</code> property) 
             ]]>
           </description>
           <type>String</type>
@@ -2129,7 +1595,7 @@
             <![CDATA[
             Just like <code>connection</code>, but for developers, i.e. this scm connection
             will not be read only.
-            <br /><b>Default value is</b>: parent value [+ path adjustment] + artifactId
+            <br><b>Default value is</b>: parent value [+ path adjustment] + (artifactId or <code>project.directory</code> property)
             ]]>
           </description>
           <type>String</type>
@@ -2147,7 +1613,7 @@
           <description>
             <![CDATA[
             The URL to the project's browsable SCM repository, such as ViewVC or Fisheye.
-            <br /><b>Default value is</b>: parent value [+ path adjustment] + artifactId
+            <br><b>Default value is</b>: parent value [+ path adjustment] + (artifactId or <code>project.directory</code> property)
             ]]>
           </description>
           <type>String</type>
@@ -2274,114 +1740,6 @@
         </codeSegment>
       </codeSegments>
     </class>
-    <class>
-      <name>SourceModification</name>
-      <description>This element describes all of the source modifications associated with a project.
-        These modifications are used to exclude or include various source depending on the
-        environment the build is running in.</description>
-      <version>3.0.0</version>
-      <superClass>FileSet</superClass>
-      <fields>
-        <field>
-          <name>className</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            If the class with this name can <b>not</b> be
-            loaded, then the includes and excludes specified below
-            will be applied to the contents of the <code>sourceDirectory</code>.
-            ]]>
-          </description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>property</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            If the property with this name is <b>not</b> set,
-            then the includes and excludes specified below
-            will be applied to the contents of the <code>sourceDirectory</code>.
-            ]]>
-          </description>
-          <type>String</type>
-        </field>
-      </fields>
-    </class>
-    <class>
-      <name>UnitTest</name>
-      <version>3.0.0</version>
-      <superClass>PatternSet</superClass>
-      <description>A PatternSet for unit tests.</description>
-      <fields>
-        <field>
-          <name>resources</name>
-          <version>3.0.0</version>
-          <description>The classpath resources to use when executing the unit tests.</description>
-          <association>
-            <type>Resource</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-      </fields>
-    </class>
-    <class>
-      <name>Version</name>
-      <version>3.0.0</version>
-      <description>
-        <![CDATA[
-        This element describes each of the previous versions of the
-        project. Each version is described by a <code>version</code>
-        element
-        ]]>
-      </description>
-      <fields>
-        <field>
-          <name>name</name>
-          <version>3.0.0</version>
-          <description>
-            <![CDATA[
-            The external version number under which this release was distributed. Examples include:
-            <code>1.0</code>,
-            <code>1.1-alpha1</code>,
-            <code>1.2-beta</code>,
-            <code>1.3.2</code> etc.
-            ]]>
-          </description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>tag</name>
-          <version>3.0.0</version>
-          <description>The name given in the SCM (e.g. CVS) used by the project for the source code
-            associated with this version of the project.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>id</name>
-          <version>3.0.0</version>
-          <description>A unique identifier for a version. This is usually identical to the name.</description>
-          <type>String</type>
-        </field>
-      </fields>
-      <codeSegments>
-        <codeSegment>
-          <version>3.0.0</version>
-          <code>
-            <![CDATA[
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString()
-    {
-        return getId();
-    }
-            ]]>
-          </code>
-        </codeSegment>
-      </codeSegments>
-    </class>
-
     <class java.clone="deep">
       <name>RepositoryBase</name>
       <version>4.0.0+</version>
@@ -2580,7 +1938,7 @@
           <description>
             <![CDATA[
             The url of the location where website is deployed, in the form <code>protocol://hostname/path</code>.
-            <br /><b>Default value is</b>: parent value [+ path adjustment] + artifactId
+            <br><b>Default value is</b>: parent value [+ path adjustment] + (artifactId or <code>project.directory</code> property)
             ]]>
           </description>
           <type>String</type>
@@ -2617,8 +1975,8 @@
             <li><code>combine.children</code>: available values are <code>merge</code> (default) and <code>append</code>,</li>
             <li><code>combine.self</code>: available values are <code>merge</code> (default) and <code>override</code>.</li>
             </ul>
-            <p>See <a href="http://maven.apache.org/pom.html#Plugins">POM Reference documentation</a> and
-            <a href="http://plexus.codehaus.org/plexus-utils/apidocs/org/codehaus/plexus/util/xml/Xpp3DomUtils.html">Xpp3DomUtils</a>
+            <p>See <a href="https://maven.apache.org/pom.html#Plugins">POM Reference documentation</a> and
+            <a href="https://codehaus-plexus.github.io/plexus-utils/apidocs/org/codehaus/plexus/util/xml/Xpp3DomUtils.html">Xpp3DomUtils</a>
             for more information.</p>
             ]]>
           </description>
@@ -2978,8 +2336,7 @@
           <description>
             <![CDATA[
             Where to store all of the generated reports. The default is
-            <code>${project.build.directory}/site</code>
-            .
+            <code>${project.build.directory}/site</code>.
             ]]>
           </description>
           <!-- TODO: why isn't default set here? -->
@@ -3258,7 +2615,7 @@
       <description><![CDATA[This is the file specification used to activate the profile. The <code>missing</code> value
         is the location of a file that needs to exist, and if it doesn't, the profile will be
         activated. On the other hand, <code>exists</code> will test for the existence of the file and if it is
-        there, the profile will be activated.<br/>
+        there, the profile will be activated.<br>
         Variable interpolation for these file specifications is limited to <code>${basedir}</code>,
         System properties and request properties.]]></description>
       <fields>
@@ -3459,9 +2816,13 @@
           <type>String</type>
           <defaultValue>2.0</defaultValue>
           <description><![CDATA[
-            The minimum version of Maven required to build the project.<br />
-            If this project builds a plugin, this is in addition the minimum version of Maven required to use
-            the resulting plugin.]]>
+            For a plugin project (packaging is <code>maven-plugin</code>), the minimum version of
+            Maven required to use the resulting plugin.<br>
+            In Maven 2, this was also specifying the minimum version of Maven required to build a
+            project, but this usage is <b>deprecated</b> in Maven 3 and not checked any more: use
+            the <a href="https://maven.apache.org/enforcer/enforcer-rules/requireMavenVersion.html">Maven Enforcer Plugin's
+            <code>requireMavenVersion</code> rule</a> instead.
+            ]]>
           </description>
           <required>false</required>
         </field>

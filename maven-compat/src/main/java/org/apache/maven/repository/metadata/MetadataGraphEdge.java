@@ -81,6 +81,7 @@ public class MetadataGraphEdge
      * used to eliminate exact duplicates in the edge list
      */
     @Override
+    @SuppressWarnings( "checkstyle:equalshashcode" )
     public boolean equals( Object o )
     {
         if ( o instanceof MetadataGraphEdge )
@@ -88,7 +89,8 @@ public class MetadataGraphEdge
             MetadataGraphEdge e = (MetadataGraphEdge) o;
 
             return objectsEqual( version, e.version )
-                && ArtifactScopeEnum.checkScope( scope ).getScope().equals( ArtifactScopeEnum.checkScope( e.scope ).getScope() )
+                && ArtifactScopeEnum.checkScope( scope ).getScope().
+                    equals( ArtifactScopeEnum.checkScope( e.scope ).getScope() )
                 && depth == e.depth;
         }
         return false;

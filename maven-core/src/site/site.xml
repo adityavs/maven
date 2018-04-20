@@ -19,9 +19,11 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<project xmlns="http://maven.apache.org/DECORATION/1.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd">
+
+  <edit>${project.scm.url}</edit>
+
   <body>
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
@@ -34,6 +36,7 @@ under the License.
       <item name="Lifecycles" href="lifecycles.html"/>
       <item name="Plugin Bindings to Default Lifecycle" href="default-bindings.html"/>
       <item name="Artifact Handlers" href="artifact-handlers.html"/>
+      <item name="Core Extensions" href="core-extensions.html"/>
     </menu>
 
     <menu ref="parent"/>

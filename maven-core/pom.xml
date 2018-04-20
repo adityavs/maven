@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-  <!--
-    Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE
-    file distributed with this work for additional information regarding copyright ownership. The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
-    applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
-    governing permissions and limitations under the License.
-  -->
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -16,17 +25,13 @@
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven</artifactId>
-    <version>3.3.7-SNAPSHOT</version>
+    <version>3.5.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>maven-core</artifactId>
 
   <name>Maven Core</name>
   <description>Maven Core classes.</description>
-
-  <properties>
-    <checkstyle.violation.ignore>RedundantThrows,NewlineAtEndOfFile,ParameterNumber,MethodLength,FileLength,JavadocType,MethodName,MagicNumber,ConstantName,VisibilityModifier,InnerAssignment</checkstyle.violation.ignore>
-  </properties>
 
   <dependencies>
     <!--  Maven -->
@@ -42,6 +47,10 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-builder-support</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -61,34 +70,50 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
-      <artifactId>maven-aether-provider</artifactId>
+      <artifactId>maven-resolver-provider</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-impl</artifactId>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-impl</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-api</artifactId>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-util</artifactId>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-spi</artifactId>
     </dependency>
-    <!-- Plexus -->
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-shared-utils</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sonatype.sisu</groupId>
-      <artifactId>sisu-guice</artifactId>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.inject</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
       <classifier>no_aop</classifier>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-interpolation</artifactId>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
     </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+    </dependency>
+    <!-- Plexus -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
@@ -102,8 +127,8 @@
       <artifactId>plexus-component-annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sonatype.plexus</groupId>
-      <artifactId>plexus-sec-dispatcher</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-jxpath</groupId>
@@ -113,7 +138,6 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>1.9.5</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -186,7 +210,7 @@
         </configuration>
         <executions>
           <execution>
-            <id>plugin-site-doc</id>
+            <id>modello-site-doc</id>
             <phase>pre-site</phase>
             <goals>
               <goal>xdoc</goal>
@@ -210,7 +234,7 @@
               <goal>create-timestamp</goal>
             </goals>
             <configuration>
-              <timestampFormat>'NON-CANONICAL_'yyyy-MM-dd'T'HH:mm:ss_'${user.name}'</timestampFormat>
+              <timestampFormat>'NON-CANONICAL_'yyyy-MM-dd'T'HH:mm:ssXXX_'${user.name}'</timestampFormat>
               <timestampPropertyName>nonCanonicalRevision</timestampPropertyName>
             </configuration>
           </execution>

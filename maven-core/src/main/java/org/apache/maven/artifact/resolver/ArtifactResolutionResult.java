@@ -31,13 +31,18 @@ import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 
 /**
  * Specific problems during resolution that we want to account for:
- * <p/>
- * - missing metadata - version range violations - version circular dependencies - missing artifacts
- * - network/transfer errors - file system errors: permissions
+ * <ul>
+ *   <li>missing metadata</li>
+ *   <li>version range violations</li>
+ *   <li>version circular dependencies</li>
+ *   <li>missing artifacts</li>
+ *   <li>network/transfer errors</li>
+ *   <li>file system errors: permissions</li>
+ * </ul>
  *
  * @author Jason van Zyl
- * @TODO carlos: all these possible has*Exceptions and get*Exceptions methods make the clients too
- *       complex requiring a long list of checks, need to create a parent/interfact/encapsulation
+ * TODO carlos: all these possible has*Exceptions and get*Exceptions methods make the clients too
+ *       complex requiring a long list of checks, need to create a parent/interface/encapsulation
  *       for the types of exceptions
  */
 public class ArtifactResolutionResult
@@ -173,9 +178,9 @@ public class ArtifactResolutionResult
     }
 
     /**
-     * @TODO this needs to accept a {@link OverConstrainedVersionException} as returned by
+     * TODO this needs to accept a {@link OverConstrainedVersionException} as returned by
      *       {@link #getVersionRangeViolation(int)} but it's not used like that in
-     *       {@link DefaultLegacyArtifactCollector}
+     *       DefaultLegacyArtifactCollector
      */
     public ArtifactResolutionResult addVersionRangeViolation( Exception e )
     {
@@ -343,14 +348,14 @@ public class ArtifactResolutionResult
         if ( artifacts != null )
         {
             int i = 1;
-            sb.append( "---------" ).append( "\n" );
-            sb.append( artifacts.size() ).append( "\n" );
+            sb.append( "---------\n" );
+            sb.append( artifacts.size() ).append( '\n' );
             for ( Artifact a : artifacts )
             {
-                sb.append( i ).append( " " ).append( a ).append( "\n" );
+                sb.append( i ).append( ' ' ).append( a ).append( '\n' );
                 i++;
             }
-            sb.append( "---------" ).append( "\n" );
+            sb.append( "---------\n" );
         }
 
         return sb.toString();

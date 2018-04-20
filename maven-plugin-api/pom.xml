@@ -25,7 +25,7 @@ under the License.
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven</artifactId>
-    <version>3.3.7-SNAPSHOT</version>
+    <version>3.5.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>maven-plugin-api</artifactId>
@@ -52,6 +52,14 @@ under the License.
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-classworlds</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -67,7 +75,7 @@ under the License.
         </configuration>
         <executions>
           <execution>
-            <id>plugin-site-doc</id>
+            <id>modello-site-doc</id>
             <phase>pre-site</phase>
             <goals>
               <goal>xdoc</goal>

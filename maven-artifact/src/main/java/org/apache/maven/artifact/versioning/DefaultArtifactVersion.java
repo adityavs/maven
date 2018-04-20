@@ -111,7 +111,7 @@ public class DefaultArtifactVersion
     {
         comparable = new ComparableVersion( version );
 
-        int index = version.indexOf( "-" );
+        int index = version.indexOf( '-' );
 
         String part1;
         String part2 = null;
@@ -180,7 +180,7 @@ public class DefaultArtifactVersion
                     fallback = Pattern.compile( "\\d+" ).matcher( qualifier ).matches();
                 }
 
-                // string tokenzier won't detect these and ignores them
+                // string tokenizer won't detect these and ignores them
                 if ( part1.contains( ".." ) || part1.startsWith( "." ) || part1.endsWith( "." ) )
                 {
                     fallback = true;

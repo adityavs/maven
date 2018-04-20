@@ -26,10 +26,10 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Map;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.io.xpp3.SettingsXpp3Writer;
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.WriterFactory;
 
 /**
@@ -46,15 +46,8 @@ public class DefaultSettingsWriter
     public void write( File output, Map<String, Object> options, Settings settings )
         throws IOException
     {
-        if ( output == null )
-        {
-            throw new IllegalArgumentException( "output file missing" );
-        }
-
-        if ( settings == null )
-        {
-            throw new IllegalArgumentException( "settings missing" );
-        }
+        Validate.notNull( output, "output cannot be null" );
+        Validate.notNull( settings, "settings cannot be null" );
 
         output.getParentFile().mkdirs();
 
@@ -65,24 +58,12 @@ public class DefaultSettingsWriter
     public void write( Writer output, Map<String, Object> options, Settings settings )
         throws IOException
     {
-        if ( output == null )
-        {
-            throw new IllegalArgumentException( "output writer missing" );
-        }
+        Validate.notNull( output, "output cannot be null" );
+        Validate.notNull( settings, "settings cannot be null" );
 
-        if ( settings == null )
+        try ( final Writer out = output )
         {
-            throw new IllegalArgumentException( "settings missing" );
-        }
-
-        try
-        {
-            SettingsXpp3Writer w = new SettingsXpp3Writer();
-            w.write( output, settings );
-        }
-        finally
-        {
-            IOUtil.close( output );
+            new SettingsXpp3Writer().write( out, settings );
         }
     }
 
@@ -90,28 +71,19 @@ public class DefaultSettingsWriter
     public void write( OutputStream output, Map<String, Object> options, Settings settings )
         throws IOException
     {
-        if ( output == null )
+        Validate.notNull( output, "output cannot be null" );
+        Validate.notNull( settings, "settings cannot be null" );
+
+        String encoding = settings.getModelEncoding();
+        // TODO Use StringUtils here
+        if ( encoding == null || encoding.length() <= 0 )
         {
-            throw new IllegalArgumentException( "output stream missing" );
+            encoding = "UTF-8";
         }
 
-        if ( settings == null )
+        try ( final Writer out = new OutputStreamWriter( output, encoding ) )
         {
-            throw new IllegalArgumentException( "settings missing" );
-        }
-
-        try
-        {
-            String encoding = settings.getModelEncoding();
-            if ( encoding == null || encoding.length() <= 0 )
-            {
-                encoding = "UTF-8";
-            }
-            write( new OutputStreamWriter( output, encoding ), options, settings );
-        }
-        finally
-        {
-            IOUtil.close( output );
+            write( out, options, settings );
         }
     }
 

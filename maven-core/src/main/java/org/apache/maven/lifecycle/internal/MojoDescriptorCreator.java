@@ -49,15 +49,16 @@ import java.util.Collection;
 import java.util.StringTokenizer;
 
 /**
+ * <p>
  * Resolves dependencies for the artifacts in context of the lifecycle build
+ * </p>
+ * <strong>NOTE:</strong> This class is not part of any public api and can be changed or deleted without prior notice.
  *
  * @since 3.0
  * @author Benjamin Bentmann
  * @author Jason van Zyl
  * @author jdcasey
  * @author Kristian Rosenvold (extracted class only)
- *         <p/>
- *         NOTE: This class is not part of any public api and can be changed or deleted without prior notice.
  */
 @Component( role = MojoDescriptorCreator.class )
 public class MojoDescriptorCreator
@@ -239,8 +240,8 @@ public class MojoDescriptorCreator
                                                 session.getRepositorySession() );
     }
 
-    // TODO: take repo mans into account as one may be aggregating prefixes of many
-    // TODO: collect at the root of the repository, read the one at the root, and fetch remote if something is missing
+    // TODO take repo mans into account as one may be aggregating prefixes of many
+    // TODO collect at the root of the repository, read the one at the root, and fetch remote if something is missing
     // or the user forces the issue
 
     public Plugin findPluginForPrefix( String prefix, MavenSession session )

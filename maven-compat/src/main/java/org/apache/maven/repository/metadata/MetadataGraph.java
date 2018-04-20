@@ -103,8 +103,9 @@ public class MetadataGraph
      * construct graph from a "dirty" tree
      *
      * @param tree "dirty" tree root
-     * @param versionedVertices true if graph nodes should be versioned (different versions -> different nodes)
-     * @param scopedVertices true if graph nodes should be versioned and scoped (different versions and/or scopes -> different nodes)
+     * @param versionedVertices true if graph nodes should be versioned (different versions -&gt; different nodes)
+     * @param scopedVertices true if graph nodes should be versioned and scoped
+     * (different versions and/or scopes -&gt; different nodes)
      *
      */
     public MetadataGraph( MetadataTreeNode tree, boolean versionedVertices, boolean scopedVertices )
@@ -485,13 +486,13 @@ public class MetadataGraph
         }
         for ( MetadataGraphVertex v : vertices )
         {
-            sb.append( "Vertex:  " ).append( v.getMd().toString() ).append( "\n" );
+            sb.append( "Vertex:  " ).append( v.getMd().toString() ).append( '\n' );
             List<MetadataGraphEdge> ins = getIncidentEdges( v );
             if ( ins != null )
             {
                 for ( MetadataGraphEdge e : ins )
                 {
-                    sb.append( "       from :  " ).append( e.toString() ).append( "\n" );
+                    sb.append( "       from :  " ).append( e.toString() ).append( '\n' );
                 }
             }
             else
@@ -504,7 +505,7 @@ public class MetadataGraph
             {
                 for ( MetadataGraphEdge e : outs )
                 {
-                    sb.append( "        to :  " ).append( e.toString() ).append( "\n" );
+                    sb.append( "        to :  " ).append( e.toString() ).append( '\n' );
                 }
             }
             else

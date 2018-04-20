@@ -42,6 +42,9 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
+/**
+ * Manages <a href="https://maven.apache.org/wagon">Wagon</a> related operations in Maven.
+ */
 @Component( role = WagonManager.class )
 public class DefaultWagonManager
     extends org.apache.maven.repository.legacy.DefaultWagonManager
@@ -166,7 +169,7 @@ public class DefaultWagonManager
             String id = mirror.getId();
             if ( id == null )
             {
-                // TODO: this should be illegal in settings.xml
+                // TODO this should be illegal in settings.xml
                 id = repository.getId();
             }
 

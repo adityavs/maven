@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.Validate;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
 import org.codehaus.plexus.component.annotations.Component;
@@ -37,7 +38,9 @@ import org.eclipse.aether.graph.DependencyFilter;
 public class DefaultProjectRealmCache
     implements ProjectRealmCache, Disposable
 {
-
+    /**
+     * CacheKey
+     */
     protected static class CacheKey
         implements Key
     {
@@ -99,10 +102,7 @@ public class DefaultProjectRealmCache
 
     public CacheRecord put( Key key, ClassRealm projectRealm, DependencyFilter extensionArtifactFilter )
     {
-        if ( projectRealm == null )
-        {
-            throw new NullPointerException();
-        }
+        Validate.notNull( projectRealm, "projectRealm cannot be null" );
 
         if ( cache.containsKey( key ) )
         {
@@ -120,7 +120,7 @@ public class DefaultProjectRealmCache
     {
         for ( CacheRecord record : cache.values() )
         {
-            ClassRealm realm = record.realm;
+            ClassRealm realm = record.getRealm();
             try
             {
                 realm.getWorld().disposeRealm( realm.getId() );

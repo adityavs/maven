@@ -44,22 +44,39 @@ public interface ExtensionRealmCache
         // marker interface for cache keys
     }
 
-    static class CacheRecord
+    /**
+     * CacheRecord
+     */
+    class CacheRecord
     {
 
-        public final ClassRealm realm;
+        private final ClassRealm realm;
 
-        public final ExtensionDescriptor desciptor;
+        private final ExtensionDescriptor descriptor;
 
-        public final List<Artifact> artifacts;
+        private final List<Artifact> artifacts;
 
-        public CacheRecord( ClassRealm realm, ExtensionDescriptor descriptor, List<Artifact> artifacts )
+        CacheRecord( ClassRealm realm, ExtensionDescriptor descriptor, List<Artifact> artifacts )
         {
             this.realm = realm;
-            this.desciptor = descriptor;
+            this.descriptor = descriptor;
             this.artifacts = artifacts;
         }
 
+        public ClassRealm getRealm()
+        {
+            return realm;
+        }
+
+        public ExtensionDescriptor getDescriptor()
+        {
+            return descriptor;
+        }
+
+        public List<Artifact> getArtifacts()
+        {
+            return artifacts;
+        }
     }
 
     Key createKey( List<Artifact> extensionArtifacts );

@@ -101,7 +101,7 @@ public class BuilderCommon
         if ( session.getRequest().getDegreeOfConcurrency() > 1 )
         {
             final Set<Plugin> unsafePlugins = executionPlan.getNonThreadSafePlugins();
-            if ( !unsafePlugins.isEmpty()  && logger.isDebugEnabled() )
+            if ( !unsafePlugins.isEmpty() )
             {
                 logger.warn( "*****************************************************************" );
                 logger.warn( "* Your build is requesting parallel execution, but project      *" );
@@ -188,7 +188,7 @@ public class BuilderCommon
         }
     }
 
-    // Todo: I'm really wondering where this method belongs; smells like it should be on MavenProject, but for some
+    // TODO I'm really wondering where this method belongs; smells like it should be on MavenProject, but for some
     // reason it isn't ? This localization is kind-of a code smell.
 
     public static String getKey( MavenProject project )

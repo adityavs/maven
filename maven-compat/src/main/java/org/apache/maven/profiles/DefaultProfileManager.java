@@ -39,6 +39,9 @@ import java.util.Map;
 import java.util.Properties;
 import org.apache.maven.model.building.ModelProblemCollectorRequest;
 
+/**
+ * DefaultProfileManager
+ */
 @Deprecated
 public class DefaultProfileManager
     implements ProfileManager
@@ -62,7 +65,7 @@ public class DefaultProfileManager
 
     /**
      * @deprecated without passing in the system properties, the SystemPropertiesProfileActivator will not work
-     *             correctly in embedded envirnments.
+     *             correctly in embedded environments.
      */
     public DefaultProfileManager( PlexusContainer container )
     {

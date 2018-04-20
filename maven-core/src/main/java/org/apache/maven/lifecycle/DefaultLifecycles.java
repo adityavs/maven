@@ -24,8 +24,6 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
-import com.google.common.base.Preconditions;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,7 +38,7 @@ import java.util.Set;
  * @author Jason van Zyl
  * @author Kristian Rosenvold
  */
-// TODO: The configuration for the lifecycle needs to be externalized so that I can use the annotations properly for the
+// TODO The configuration for the lifecycle needs to be externalized so that I can use the annotations properly for the
 // wiring and reference and external source for the lifecycle configuration.
 @Component( role = DefaultLifecycles.class )
 public class DefaultLifecycles
@@ -122,7 +120,10 @@ public class DefaultLifecycles
         for ( String name : lifecycleNames )
         {
             Lifecycle lifecycle = lifecycles.get( name );
-            Preconditions.checkNotNull( "A lifecycle must have an id.", lifecycle.getId() );
+            if ( lifecycle.getId() == null )
+            {
+                throw new NullPointerException( "A lifecycle must have an id." );
+            }
             result.add( lifecycle );
         }
 

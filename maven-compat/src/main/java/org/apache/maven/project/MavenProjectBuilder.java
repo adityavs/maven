@@ -39,7 +39,8 @@ public interface MavenProjectBuilder
     MavenProject build( File pom, ProjectBuilderConfiguration configuration )
         throws ProjectBuildingException;
 
-    //TODO maven-site-plugin -- Vincent, Dennis and Lukas are checking but this doesn't appear to be required anymore.
+    //TODO maven-site-plugin -- not used by the plugin directly, but used by Doxia Integration Tool & MPIR
+    // see DOXIASITETOOLS-167 & MPIR-349
     MavenProject build( File pom, ArtifactRepository localRepository, ProfileManager profileManager )
         throws ProjectBuildingException;
 
@@ -53,7 +54,7 @@ public interface MavenProjectBuilder
                                       ArtifactRepository localRepository, boolean allowStubModel )
         throws ProjectBuildingException;
 
-    // TODO: this is only to provide a project for plugins that don't need a project to execute but need some
+    // TODO this is only to provide a project for plugins that don't need a project to execute but need some
     // of the values from a MavenProject. Ideally this should be something internal and nothing outside Maven
     // would ever need this so it should not be exposed in a public API
     MavenProject buildStandaloneSuperProject( ProjectBuilderConfiguration configuration )

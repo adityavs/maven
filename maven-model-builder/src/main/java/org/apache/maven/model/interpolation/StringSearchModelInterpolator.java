@@ -44,6 +44,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * StringSearchModelInterpolator
+ */
 @Component( role = ModelInterpolator.class )
 public class StringSearchModelInterpolator
     extends AbstractStringBasedModelInterpolator
@@ -106,10 +109,9 @@ public class StringSearchModelInterpolator
 
         private final ModelProblemCollector problems;
 
-        public InterpolateObjectAction( Object target, List<? extends ValueSource> valueSources,
-                                        List<? extends InterpolationPostProcessor> postProcessors,
-                                        StringSearchModelInterpolator modelInterpolator,
-                                        ModelProblemCollector problems )
+        InterpolateObjectAction( Object target, List<? extends ValueSource> valueSources,
+                                 List<? extends InterpolationPostProcessor> postProcessors,
+                                 StringSearchModelInterpolator modelInterpolator, ModelProblemCollector problems )
         {
             this.valueSources = valueSources;
             this.postProcessors = postProcessors;
@@ -306,7 +308,7 @@ public class StringSearchModelInterpolator
                             new ModelProblemCollectorRequest( Severity.ERROR, Version.BASE ).setMessage(
                                 "Failed to interpolate field3: " + field + " on class: "
                                     + field.getType().getName() ).setException(
-                                e ) ); // todo: Not entirely the same message
+                                e ) ); // TODO Not entirely the same message
                     }
                     catch ( IllegalAccessException e )
                     {

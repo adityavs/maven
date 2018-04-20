@@ -62,7 +62,7 @@ public class Lifecycle
     {
         return this.lifecyclePhases;
     }
-    
+
     /**
      * Method setId
      *
@@ -76,7 +76,7 @@ public class Lifecycle
     /**
      * Method setLifecyclePhases
      *
-     * @param phases
+     * @param lifecyclePhases
      */
     public void setLifecyclePhases( Map<String, LifecyclePhase> lifecyclePhases )
     {
@@ -91,12 +91,12 @@ public class Lifecycle
         {
             return null;
         }
-        
+
         if ( lphases.isEmpty() )
         {
             return Collections.emptyMap();
         }
-        
+
         Map<String, String> phases = new LinkedHashMap<>();
         for ( Map.Entry<String, LifecyclePhase> e: lphases.entrySet() )
         {
@@ -106,8 +106,13 @@ public class Lifecycle
     }
 
     @Deprecated
-    public void setPhases( Map<String, LifecyclePhase> phases )
+    public void setPhases( Map<String, String> phases )
     {
-        setLifecyclePhases( phases );
+        Map<String, LifecyclePhase> lphases = new LinkedHashMap<>();
+        for ( Map.Entry<String, String> e: phases.entrySet() )
+        {
+            lphases.put( e.getKey(), new LifecyclePhase( e.getValue() ) );
+        }
+        setLifecyclePhases( lphases );
     }
 }

@@ -55,7 +55,7 @@ class ReactorModelPool
 
         private final int hashCode;
 
-        public CacheKey( String groupId, String artifactId, String version )
+        CacheKey( String groupId, String artifactId, String version )
         {
             this.groupId = ( groupId != null ) ? groupId : "";
             this.artifactId = ( artifactId != null ) ? artifactId : "";
@@ -96,7 +96,7 @@ class ReactorModelPool
         @Override
         public String toString()
         {
-            StringBuilder buffer = new StringBuilder( 96 );
+            StringBuilder buffer = new StringBuilder( 128 );
             buffer.append( groupId ).append( ':' ).append( artifactId ).append( ':' ).append( version );
             return buffer.toString();
         }

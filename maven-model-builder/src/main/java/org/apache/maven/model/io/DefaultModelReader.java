@@ -26,13 +26,14 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.model.InputSource;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3ReaderEx;
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.ReaderFactory;
+import org.codehaus.plexus.util.xml.XmlStreamReader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
@@ -49,10 +50,7 @@ public class DefaultModelReader
     public Model read( File input, Map<String, ?> options )
         throws IOException
     {
-        if ( input == null )
-        {
-            throw new IllegalArgumentException( "input file missing" );
-        }
+        Validate.notNull( input, "input cannot be null" );
 
         Model model = read( new FileInputStream( input ), options );
 
@@ -65,18 +63,11 @@ public class DefaultModelReader
     public Model read( Reader input, Map<String, ?> options )
         throws IOException
     {
-        if ( input == null )
-        {
-            throw new IllegalArgumentException( "input reader missing" );
-        }
+        Validate.notNull( input, "input cannot be null" );
 
-        try
+        try ( final Reader in = input )
         {
-            return read( input, isStrict( options ), getSource( options ) );
-        }
-        finally
-        {
-            IOUtil.close( input );
+            return read( in, isStrict( options ), getSource( options ) );
         }
     }
 
@@ -84,18 +75,11 @@ public class DefaultModelReader
     public Model read( InputStream input, Map<String, ?> options )
         throws IOException
     {
-        if ( input == null )
-        {
-            throw new IllegalArgumentException( "input stream missing" );
-        }
+        Validate.notNull( input, "input cannot be null" );
 
-        try
+        try ( final XmlStreamReader in = ReaderFactory.newXmlReader( input ) )
         {
-            return read( ReaderFactory.newXmlReader( input ), isStrict( options ), getSource( options ) );
-        }
-        finally
-        {
-            IOUtil.close( input );
+            return read( in, isStrict( options ), getSource( options ) );
         }
     }
 

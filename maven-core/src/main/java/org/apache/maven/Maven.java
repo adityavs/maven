@@ -23,11 +23,15 @@ import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
 
 /**
+ * The main Maven execution entry point, which will execute a full Maven execution session.
+ *
  * @author Jason van Zyl
+ * @see org.apache.maven.execution.MavenSession
  */
 public interface Maven
 {
     @Deprecated
+    @SuppressWarnings( "checkstyle:constantname" )
     String POMv4 = "pom.xml";
 
     MavenExecutionResult execute( MavenExecutionRequest request );

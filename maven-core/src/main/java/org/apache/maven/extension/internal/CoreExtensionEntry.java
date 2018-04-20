@@ -19,7 +19,6 @@ package org.apache.maven.extension.internal;
  * under the License.
  */
 
-import com.google.common.collect.ImmutableSet;
 import org.apache.maven.project.ExtensionDescriptor;
 import org.apache.maven.project.ExtensionDescriptorBuilder;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -29,7 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -50,8 +51,8 @@ public class CoreExtensionEntry
     public CoreExtensionEntry( ClassRealm realm, Collection<String> artifacts, Collection<String> packages )
     {
         this.realm = realm;
-        this.artifacts = ImmutableSet.copyOf( artifacts );
-        this.packages = ImmutableSet.copyOf( packages );
+        this.artifacts = Collections.unmodifiableSet( new HashSet<>( artifacts ) );
+        this.packages = Collections.unmodifiableSet( new HashSet<>( packages ) );
     }
 
     /**
@@ -78,7 +79,7 @@ public class CoreExtensionEntry
         return packages;
     }
 
-    private static final ExtensionDescriptorBuilder builder = new ExtensionDescriptorBuilder();
+    private static final ExtensionDescriptorBuilder BUILDER = new ExtensionDescriptorBuilder();
 
     public static CoreExtensionEntry discoverFrom( ClassRealm loader )
     {
@@ -87,13 +88,13 @@ public class CoreExtensionEntry
 
         try
         {
-            Enumeration<URL> urls = loader.getResources( builder.getExtensionDescriptorLocation() );
+            Enumeration<URL> urls = loader.getResources( BUILDER.getExtensionDescriptorLocation() );
             while ( urls.hasMoreElements() )
             {
 
                 try ( InputStream is = urls.nextElement().openStream() )
                 {
-                    ExtensionDescriptor descriptor = builder.build( is );
+                    ExtensionDescriptor descriptor = BUILDER.build( is );
                     artifacts.addAll( descriptor.getExportedArtifacts() );
                     packages.addAll( descriptor.getExportedPackages() );
                 }
@@ -116,7 +117,7 @@ public class CoreExtensionEntry
         {
             for ( File entry : classpath )
             {
-                ExtensionDescriptor descriptor = builder.build( entry );
+                ExtensionDescriptor descriptor = BUILDER.build( entry );
                 if ( descriptor != null )
                 {
                     artifacts.addAll( descriptor.getExportedArtifacts() );

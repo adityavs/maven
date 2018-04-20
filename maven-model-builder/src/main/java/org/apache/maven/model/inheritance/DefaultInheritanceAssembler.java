@@ -19,14 +19,16 @@ package org.apache.maven.model.inheritance;
  * under the License.
  */
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.ModelBase;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginContainer;
 import org.apache.maven.model.ReportPlugin;
@@ -35,12 +37,14 @@ import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.merge.MavenModelMerger;
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Handles inheritance of model values.
  *
  * @author Benjamin Bentmann
  */
+@SuppressWarnings( { "checkstyle:methodname" } )
 @Component( role = InheritanceAssembler.class )
 public class DefaultInheritanceAssembler
     implements InheritanceAssembler
@@ -48,12 +52,18 @@ public class DefaultInheritanceAssembler
 
     private InheritanceModelMerger merger = new InheritanceModelMerger();
 
+    private static final String CHILD_DIRECTORY = "child-directory";
+
+    private static final String CHILD_DIRECTORY_PROPERTY = "project.directory";
+
     @Override
     public void assembleModelInheritance( Model child, Model parent, ModelBuildingRequest request,
                                           ModelProblemCollector problems )
     {
         Map<Object, Object> hints = new HashMap<>();
-        hints.put( MavenModelMerger.CHILD_PATH_ADJUSTMENT, getChildPathAdjustment( child, parent ) );
+        String childPath = child.getProperties().getProperty( CHILD_DIRECTORY_PROPERTY, child.getArtifactId() );
+        hints.put( CHILD_DIRECTORY, childPath );
+        hints.put( MavenModelMerger.CHILD_PATH_ADJUSTMENT, getChildPathAdjustment( child, parent, childPath ) );
         merger.merge( child, parent, false, hints );
     }
 
@@ -73,9 +83,10 @@ public class DefaultInheritanceAssembler
      *
      * @param child The child model, must not be <code>null</code>.
      * @param parent The parent model, may be <code>null</code>.
+     * @param childDirectory The directory defined in child model, may be <code>null</code>.
      * @return The path adjustment, can be empty but never <code>null</code>.
      */
-    private String getChildPathAdjustment( Model child, Model parent )
+    private String getChildPathAdjustment( Model child, Model parent, String childDirectory )
     {
         String adjustment = "";
 
@@ -84,16 +95,15 @@ public class DefaultInheritanceAssembler
             String childName = child.getArtifactId();
 
             /*
-             * This logic (using filesystem, against wanted independance from the user environment) exists only for the
+             * This logic (using filesystem, against wanted independence from the user environment) exists only for the
              * sake of backward-compat with 2.x (MNG-5000). In general, it is wrong to
              * base URL inheritance on the module directory names as this information is unavailable for POMs in the
              * repository. In other words, modules where artifactId != moduleDirName will see different effective URLs
              * depending on how the model was constructed (from filesystem or from repository).
              */
-            File childDirectory = child.getProjectDirectory();
-            if ( childDirectory != null )
+            if ( child.getProjectDirectory() != null )
             {
-                childName = childDirectory.getName();
+                childName = child.getProjectDirectory().getName();
             }
 
             for ( String module : parent.getModules() )
@@ -115,7 +125,7 @@ public class DefaultInheritanceAssembler
 
                 moduleName = moduleName.substring( lastSlash + 1 );
 
-                if ( moduleName.equals( childName ) && lastSlash >= 0 )
+                if ( ( moduleName.equals( childName ) || ( moduleName.equals( childDirectory ) ) ) && lastSlash >= 0 )
                 {
                     adjustment = module.substring( 0, lastSlash );
                     break;
@@ -126,6 +136,9 @@ public class DefaultInheritanceAssembler
         return adjustment;
     }
 
+    /**
+     * InheritanceModelMerger
+     */
     protected static class InheritanceModelMerger
         extends MavenModelMerger
     {
@@ -133,55 +146,91 @@ public class DefaultInheritanceAssembler
         @Override
         protected String extrapolateChildUrl( String parentUrl, Map<Object, Object> context )
         {
-            Object artifactId = context.get( ARTIFACT_ID );
+            Object childDirectory = context.get( CHILD_DIRECTORY );
             Object childPathAdjustment = context.get( CHILD_PATH_ADJUSTMENT );
 
-            if ( artifactId != null && childPathAdjustment != null )
-            {
-                // append childPathAdjustment and artifactId to parent url
-                return appendPath( parentUrl, artifactId.toString(), childPathAdjustment.toString() );
-            }
-            else
+            if ( StringUtils.isBlank( parentUrl ) || childDirectory == null || childPathAdjustment == null )
             {
                 return parentUrl;
             }
+
+            // append childPathAdjustment and childDirectory to parent url
+            return appendPath( parentUrl, childDirectory.toString(), childPathAdjustment.toString() );
         }
 
         private String appendPath( String parentUrl, String childPath, String pathAdjustment )
         {
-            String url = parentUrl;
-            url = concatPath( url, pathAdjustment );
-            url = concatPath( url, childPath );
-            return url;
+            StringBuilder url = new StringBuilder( parentUrl.length() + pathAdjustment.length() + childPath.length()
+                + ( ( pathAdjustment.length() == 0 ) ? 1 : 2 ) );
+
+            url.append( parentUrl );
+            concatPath( url, pathAdjustment );
+            concatPath( url, childPath );
+
+            return url.toString();
         }
 
-        private String concatPath( String base, String path )
+        private void concatPath( StringBuilder url, String path )
         {
-            String result = base;
-
-            if ( path != null && path.length() > 0 )
+            if ( path.length() > 0 )
             {
-                if ( ( result.endsWith( "/" ) && !path.startsWith( "/" ) )
-                    || ( !result.endsWith( "/" ) && path.startsWith( "/" ) ) )
+                boolean initialUrlEndsWithSlash = url.charAt( url.length() - 1 ) == '/';
+                boolean pathStartsWithSlash = path.charAt( 0 ) ==  '/';
+
+                if ( pathStartsWithSlash )
                 {
-                    result += path;
+                    if ( initialUrlEndsWithSlash )
+                    {
+                        // 1 extra '/' to remove
+                        url.setLength( url.length() - 1 );
+                    }
                 }
-                else if ( result.endsWith( "/" ) && path.startsWith( "/" ) )
+                else if ( !initialUrlEndsWithSlash )
                 {
-                    result += path.substring( 1 );
+                    // add missing '/' between url and path
+                    url.append( '/' );
                 }
-                else
+
+                url.append( path );
+
+                // ensure resulting url ends with slash if initial url was
+                if ( initialUrlEndsWithSlash && !path.endsWith( "/" ) )
                 {
-                    result += '/';
-                    result += path;
-                }
-                if ( base.endsWith( "/" ) && !result.endsWith( "/" ) )
-                {
-                    result += '/';
+                    url.append( '/' );
                 }
             }
+        }
 
-            return result;
+        @Override
+        protected void mergeModelBase_Properties( ModelBase target, ModelBase source, boolean sourceDominant,
+                                                  Map<Object, Object> context )
+        {
+            Properties merged = new Properties();
+            if ( sourceDominant )
+            {
+                merged.putAll( target.getProperties() );
+                putAll( merged, source.getProperties(), CHILD_DIRECTORY_PROPERTY );
+            }
+            else
+            {
+                putAll( merged, source.getProperties(), CHILD_DIRECTORY_PROPERTY );
+                merged.putAll( target.getProperties() );
+            }
+            target.setProperties( merged );
+            target.setLocation( "properties",
+                                InputLocation.merge( target.getLocation( "properties" ),
+                                                     source.getLocation( "properties" ), sourceDominant ) );
+        }
+
+        private void putAll( Map<Object, Object> s, Map<Object, Object> t, Object excludeKey )
+        {
+            for ( Map.Entry<Object, Object> e : t.entrySet() )
+            {
+                if ( !e.getKey().equals( excludeKey ) )
+                {
+                    s.put( e.getKey(), e.getValue() );
+                }
+            }
         }
 
         @Override

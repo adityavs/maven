@@ -44,14 +44,14 @@ public class ModelProblemUtils
             return "";
         }
 
-        StringBuilder buffer = new StringBuilder( 192 );
+        StringBuilder buffer = new StringBuilder( 128 );
 
         buffer.append( toId( model ) );
 
         File pomFile = model.getPomFile();
         if ( pomFile != null )
         {
-            buffer.append( " (" ).append( pomFile ).append( ")" );
+            buffer.append( " (" ).append( pomFile ).append( ')' );
         }
 
         return buffer.toString();
@@ -108,7 +108,7 @@ public class ModelProblemUtils
      */
     static String toId( String groupId, String artifactId, String version )
     {
-        StringBuilder buffer = new StringBuilder( 96 );
+        StringBuilder buffer = new StringBuilder( 128 );
 
         buffer.append( ( groupId != null && groupId.length() > 0 ) ? groupId : "[unknown-group-id]" );
         buffer.append( ':' );

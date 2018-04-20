@@ -74,11 +74,11 @@ import org.eclipse.aether.repository.RemoteRepository;
 
 /**
  * The concern of the project is provide runtime values based on the model.
- * <p/>
+ * <p>
  * The values in the model remain untouched but during the process of building a project notions like inheritance and
  * interpolation can be added. This allows to have an entity which is useful in a runtime while preserving the model so
  * that it can be marshalled and unmarshalled without being tainted by runtime requirements.
- * <p/>
+ * </p>
  * <p>
  * With changes during 3.2.2 release MavenProject is closer to being immutable after construction with the removal of
  * all components from this class, and the upfront construction taken care of entirely by the @{ProjectBuilder}. There
@@ -221,7 +221,7 @@ public class MavenProject
         this.artifact = artifact;
     }
 
-    // @todo I would like to get rid of this. jvz.
+    // TODO I would like to get rid of this. jvz.
     public Model getModel()
     {
         return model;
@@ -352,7 +352,7 @@ public class MavenProject
         {
             if ( a.getArtifactHandler().isAddedToClasspath() )
             {
-                // TODO: let the scope handler deal with this
+                // TODO let the scope handler deal with this
                 if ( Artifact.SCOPE_COMPILE.equals( a.getScope() ) || Artifact.SCOPE_PROVIDED.equals( a.getScope() )
                     || Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
                 {
@@ -364,7 +364,7 @@ public class MavenProject
         return list;
     }
 
-    // TODO: this checking for file == null happens because the resolver has been confused about the root
+    // TODO this checking for file == null happens because the resolver has been confused about the root
     // artifact or not. things like the stupid dummy artifact coming from surefire.
     public List<String> getTestClasspathElements()
         throws DependencyResolutionRequiredException
@@ -408,7 +408,7 @@ public class MavenProject
         for ( Artifact a : getArtifacts() )
         {
             if ( a.getArtifactHandler().isAddedToClasspath()
-            // TODO: let the scope handler deal with this
+            // TODO let the scope handler deal with this
                 && ( Artifact.SCOPE_COMPILE.equals( a.getScope() ) || Artifact.SCOPE_RUNTIME.equals( a.getScope() ) ) )
             {
                 addArtifactPath( a, list );
@@ -470,7 +470,7 @@ public class MavenProject
 
     public String getName()
     {
-        // TODO: this should not be allowed to be null.
+        // TODO this should not be allowed to be null.
         if ( getModel().getName() != null )
         {
             return getModel().getName();
@@ -696,7 +696,7 @@ public class MavenProject
      * what phases have run dependencies in some scopes won't be included. eg. if only compile phase has run,
      * dependencies with scope test won't be included.
      *
-     * @return {@link Set} &lt; {@link Artifact} >
+     * @return {@link Set} &lt; {@link Artifact} &gt;
      * @see #getDependencyArtifacts() to get only direct dependencies
      */
     public Set<Artifact> getArtifacts()
@@ -992,7 +992,7 @@ public class MavenProject
     /**
      * Direct dependencies that this project has.
      *
-     * @return {@link Set} &lt; {@link Artifact} >
+     * @return {@link Set} &lt; {@link Artifact} &gt;
      * @see #getArtifacts() to get all transitive dependencies
      */
     @Deprecated
@@ -1133,9 +1133,9 @@ public class MavenProject
         StringBuilder sb = new StringBuilder( 128 );
         sb.append( "MavenProject: " );
         sb.append( getGroupId() );
-        sb.append( ":" );
+        sb.append( ':' );
         sb.append( getArtifactId() );
-        sb.append( ":" );
+        sb.append( ':' );
         sb.append( getVersion() );
         sb.append( " @ " );
 
@@ -1152,7 +1152,6 @@ public class MavenProject
     }
 
     /**
-     * @throws CloneNotSupportedException
      * @since 2.0.9
      */
     @Override
@@ -1575,10 +1574,10 @@ public class MavenProject
 
         for ( Artifact a : getArtifacts() )
         {
-            // TODO: classpath check doesn't belong here - that's the other method
+            // TODO classpath check doesn't belong here - that's the other method
             if ( a.getArtifactHandler().isAddedToClasspath() )
             {
-                // TODO: let the scope handler deal with this
+                // TODO let the scope handler deal with this
                 if ( Artifact.SCOPE_COMPILE.equals( a.getScope() ) || Artifact.SCOPE_PROVIDED.equals( a.getScope() )
                     || Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
                 {
@@ -1603,7 +1602,7 @@ public class MavenProject
 
         for ( Artifact a : getArtifacts() )
         {
-            // TODO: let the scope handler deal with this
+            // TODO let the scope handler deal with this
             if ( Artifact.SCOPE_COMPILE.equals( a.getScope() ) || Artifact.SCOPE_PROVIDED.equals( a.getScope() )
                 || Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
             {
@@ -1629,7 +1628,7 @@ public class MavenProject
 
         for ( Artifact a : getArtifacts() )
         {
-            // TODO: classpath check doesn't belong here - that's the other method
+            // TODO classpath check doesn't belong here - that's the other method
             if ( a.getArtifactHandler().isAddedToClasspath() )
             {
                 list.add( a );
@@ -1680,7 +1679,7 @@ public class MavenProject
 
         for ( Artifact a : getArtifacts()  )
         {
-            // TODO: let the scope handler deal with this
+            // TODO let the scope handler deal with this
             if ( Artifact.SCOPE_COMPILE.equals( a.getScope() ) || Artifact.SCOPE_RUNTIME.equals( a.getScope() ) )
             {
                 Dependency dependency = new Dependency();
@@ -1705,9 +1704,9 @@ public class MavenProject
 
         for ( Artifact a : getArtifacts()  )
         {
-            // TODO: classpath check doesn't belong here - that's the other method
+            // TODO classpath check doesn't belong here - that's the other method
             if ( a.getArtifactHandler().isAddedToClasspath()
-            // TODO: let the scope handler deal with this
+            // TODO let the scope handler deal with this
                 && ( Artifact.SCOPE_COMPILE.equals( a.getScope() ) || Artifact.SCOPE_RUNTIME.equals( a.getScope() ) ) )
             {
                 list.add( a );
@@ -1732,7 +1731,7 @@ public class MavenProject
         {
             if ( a.getArtifactHandler().isAddedToClasspath() )
             {
-                // TODO: let the scope handler deal with this
+                // TODO let the scope handler deal with this
                 if ( Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
                 {
                     addArtifactPath( a, list );
@@ -1749,10 +1748,10 @@ public class MavenProject
 
         for ( Artifact a : getArtifacts() )
         {
-            // TODO: classpath check doesn't belong here - that's the other method
+            // TODO classpath check doesn't belong here - that's the other method
             if ( a.getArtifactHandler().isAddedToClasspath() )
             {
-                // TODO: let the scope handler deal with this
+                // TODO let the scope handler deal with this
                 if ( Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
                 {
                     list.add( a );
@@ -1776,7 +1775,7 @@ public class MavenProject
 
         for ( Artifact a : getArtifacts() )
         {
-            // TODO: let the scope handler deal with this
+            // TODO let the scope handler deal with this
             if ( Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
             {
                 Dependency dependency = new Dependency();

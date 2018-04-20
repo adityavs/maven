@@ -19,6 +19,7 @@ package org.apache.maven.plugin.internal;
  * under the License.
  */
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.classrealm.ClassRealmManager;
@@ -120,10 +121,12 @@ public class DefaultMavenPluginManager
 {
 
     /**
-     * PluginId=>ExtensionRealmCache.CacheRecord map MavenProject context value key. The map is used to ensure the same
-     * class realm is used to load build extensions and load mojos for extensions=true plugins.
-     *
-     * @noreference this is part of internal implementation and may be changed or removed without notice
+     * <p>
+     * PluginId =&gt; ExtensionRealmCache.CacheRecord map MavenProject context value key. The map is used to ensure the
+     * same class realm is used to load build extensions and load mojos for extensions=true plugins.
+     * </p>
+     * <strong>Note:</strong> This is part of internal implementation and may be changed or removed without notice
+     * 
      * @since 3.3.0
      */
     public static final String KEY_EXTENSIONS_REALMS = DefaultMavenPluginManager.class.getName() + "/extensionsRealms";
@@ -336,8 +339,8 @@ public class DefaultMavenPluginManager
                 throw new IllegalStateException( e );
             }
 
-            ClassRealm pluginRealm = extensionRecord.realm;
-            List<Artifact> pluginArtifacts = extensionRecord.artifacts;
+            ClassRealm pluginRealm = extensionRecord.getRealm();
+            List<Artifact> pluginArtifacts = extensionRecord.getArtifacts();
 
             for ( ComponentDescriptor<?> componentDescriptor : pluginDescriptor.getComponents() )
             {
@@ -359,11 +362,11 @@ public class DefaultMavenPluginManager
 
             if ( cacheRecord != null )
             {
-                pluginDescriptor.setClassRealm( cacheRecord.realm );
-                pluginDescriptor.setArtifacts( new ArrayList<>( cacheRecord.artifacts ) );
+                pluginDescriptor.setClassRealm( cacheRecord.getRealm() );
+                pluginDescriptor.setArtifacts( new ArrayList<>( cacheRecord.getArtifacts() ) );
                 for ( ComponentDescriptor<?> componentDescriptor : pluginDescriptor.getComponents() )
                 {
-                    componentDescriptor.setRealm( cacheRecord.realm );
+                    componentDescriptor.setRealm( cacheRecord.getRealm() );
                 }
             }
             else
@@ -382,19 +385,10 @@ public class DefaultMavenPluginManager
                                     Map<String, ClassLoader> foreignImports, DependencyFilter filter )
         throws PluginResolutionException, PluginContainerException
     {
-        Plugin plugin = pluginDescriptor.getPlugin();
+        Plugin plugin = Validate.notNull( pluginDescriptor.getPlugin(), "pluginDescriptor.plugin cannot be null" );
 
-        if ( plugin == null )
-        {
-            throw new IllegalArgumentException( "incomplete plugin descriptor, plugin missing" );
-        }
-
-        Artifact pluginArtifact = pluginDescriptor.getPluginArtifact();
-
-        if ( pluginArtifact == null )
-        {
-            throw new IllegalArgumentException( "incomplete plugin descriptor, plugin artifact missing" );
-        }
+        Artifact pluginArtifact =
+            Validate.notNull( pluginDescriptor.getPluginArtifact(), "pluginDescriptor.pluginArtifact cannot be null" );
 
         MavenProject project = session.getCurrentProject();
 
@@ -625,7 +619,7 @@ public class DefaultMavenPluginManager
 
         try
         {
-            // TODO: could the configuration be passed to lookup and the configurator known to plexus via the descriptor
+            // TODO could the configuration be passed to lookup and the configurator known to plexus via the descriptor
             // so that this method could entirely be handled by a plexus lookup?
             configurator = container.lookup( ComponentConfigurator.class, configuratorId );
 
@@ -838,7 +832,7 @@ public class DefaultMavenPluginManager
         }
         if ( recordArtifacts != null )
         {
-            artifacts = recordArtifacts.artifacts;
+            artifacts = recordArtifacts.getArtifacts();
         }
         else
         {

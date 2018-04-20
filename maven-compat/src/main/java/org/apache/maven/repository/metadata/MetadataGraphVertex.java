@@ -31,7 +31,7 @@ public class MetadataGraphVertex
 {
     ArtifactMetadata md;
 
-    // indications to use these in comparrison
+    // indications to use these in comparison
     private boolean compareVersion = false;
     private boolean compareScope   = false;
 
@@ -192,17 +192,17 @@ public class MetadataGraphVertex
             return super.hashCode();
         }
         StringBuilder hashString = new StringBuilder( 128 );
-        hashString.append( md.groupId ).append( "|" );
-        hashString.append( md.artifactId ).append( "|" );
+        hashString.append( md.groupId ).append( '|' );
+        hashString.append( md.artifactId ).append( '|' );
 
         if ( compareVersion )
         {
-            hashString.append( md.version ).append( "|" );
+            hashString.append( md.version ).append( '|' );
         }
 
         if ( compareScope )
         {
-            hashString.append( md.getArtifactScope() ).append( "|" );
+            hashString.append( md.getArtifactScope() ).append( '|' );
         }
 
         return hashString.toString().hashCode();

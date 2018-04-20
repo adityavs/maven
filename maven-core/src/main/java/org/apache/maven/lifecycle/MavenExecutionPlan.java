@@ -34,14 +34,17 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 
-//TODO: lifecycles being executed
-//TODO: what runs in each phase
-//TODO: plugins that need downloading
-//TODO: project dependencies that need downloading
-//TODO: unfortunately the plugins need to be downloaded in order to get the plugin.xml file. need to externalize this
+//TODO lifecycles being executed
+//TODO what runs in each phase
+//TODO plugins that need downloading
+//TODO project dependencies that need downloading
+//TODO unfortunately the plugins need to be downloaded in order to get the plugin.xml file. need to externalize this
 //      from the plugin archive.
-//TODO: this will be the class that people get in IDEs to modify
+//TODO this will be the class that people get in IDEs to modify
 
+/**
+ * MavenExecutionPlan
+ */
 public class MavenExecutionPlan
     implements Iterable<ExecutionPlanItem>
 {

@@ -42,14 +42,15 @@ import java.util.List;
 
 /**
  * A stub dependency graph that is custom made for testing concurrent build graph evaluations.
- * <p/>
+ * <p>
  * Implements a graph as follows:
  * A has no dependencies
  * B depends on A
  * C depends on A
- * X depends on B & C
+ * X depends on B &amp; C
  * Y depends on B
  * Z depends on C
+ * </p>
  *
  * @author Kristian Rosenvold
  */
@@ -169,9 +170,14 @@ public class ProjectDependencyGraphStub
         return dependencies;
     }
 
+    public List<MavenProject> getAllProjects()
+    {
+        return Arrays.asList( A, B, C, X, Y, Z, UNKNOWN );
+    }
+
     public List<MavenProject> getSortedProjects()
     {
-        return Arrays.asList( A, B, C, X, Y, Z ); // I'm not entirely sure about the order but this shold do...
+        return Arrays.asList( A, B, C, X, Y, Z ); // I'm not entirely sure about the order but this should do...
     }
 
     public List<MavenProject> getDownstreamProjects( MavenProject project, boolean transitive )

@@ -43,14 +43,27 @@ public interface ProjectRealmCache
         // marker interface for cache keys
     }
 
-    static class CacheRecord
+    /**
+     * CacheRecord
+     */
+    class CacheRecord
     {
 
-        public final ClassRealm realm;
+        public ClassRealm getRealm()
+        {
+            return realm;
+        }
 
-        public final DependencyFilter extensionArtifactFilter;
+        public DependencyFilter getExtensionArtifactFilter()
+        {
+            return extensionArtifactFilter;
+        }
 
-        public CacheRecord( ClassRealm realm, DependencyFilter extensionArtifactFilter )
+        private final ClassRealm realm;
+
+        private final DependencyFilter extensionArtifactFilter;
+
+        CacheRecord( ClassRealm realm, DependencyFilter extensionArtifactFilter )
         {
             this.realm = realm;
             this.extensionArtifactFilter = extensionArtifactFilter;

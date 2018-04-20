@@ -53,6 +53,7 @@ import org.apache.maven.model.Site;
  *
  * @author Benjamin Bentmann
  */
+@SuppressWarnings( { "checkstyle:methodname" } )
 public class MavenModelMerger
     extends ModelMerger
 {
@@ -109,7 +110,7 @@ public class MavenModelMerger
     }
 
     /*
-     * TODO: Whether the merge continues recursively into an existing node or not could be an option for the generated
+     * TODO Whether the merge continues recursively into an existing node or not could be an option for the generated
      * merger
      */
     @Override
@@ -266,7 +267,7 @@ public class MavenModelMerger
     }
 
     /*
-     * TODO: The order of the merged list could be controlled by an attribute in the model association: target-first,
+     * TODO The order of the merged list could be controlled by an attribute in the model association: target-first,
      * source-first, dominant-first, recessive-first
      */
     @Override
@@ -352,7 +353,7 @@ public class MavenModelMerger
     }
 
     /*
-     * TODO: Whether duplicates should be removed looks like an option for the generated merger.
+     * TODO Whether duplicates should be removed looks like an option for the generated merger.
      */
     @Override
     protected void mergeBuildBase_Filters( BuildBase target, BuildBase source, boolean sourceDominant,

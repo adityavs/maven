@@ -26,14 +26,13 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.codehaus.plexus.component.annotations.Component;
 
 /**
- * The code in this class is taken from DefaultRepositorylayout, located at:
- * http://svn.apache.org/viewvc/maven/components/trunk/maven-artifact/src/main/java/org/apache/maven/artifact/repository/layout/DefaultRepositoryLayout.java
- *
+ * FlatRepositoryLayout
  */
 @Component( role = ArtifactRepositoryLayout.class, hint = "flat" )
 public class FlatRepositoryLayout
     implements ArtifactRepositoryLayout
 {
+
     private static final char ARTIFACT_SEPARATOR = '-';
 
     private static final char GROUP_SEPARATOR = '.';

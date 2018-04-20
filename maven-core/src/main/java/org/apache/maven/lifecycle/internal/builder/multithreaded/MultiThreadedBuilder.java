@@ -44,12 +44,17 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
 /**
- * Builds the full lifecycle in weave-mode (phase by phase as opposed to project-by-project)
+ * Builds the full lifecycle in weave-mode (phase by phase as opposed to project-by-project).
+ * <p>
+ * This builder uses a number of threads equal to the minimum of the degree of concurrency (which is the thread count
+ * set with <code>-T</code> on the command-line) and the number of projects to build. As such, building a single project
+ * will always result in a sequential build, regardless of the thread count.
+ * </p> 
+ * <strong>NOTE:</strong> This class is not part of any public api and can be changed or deleted without prior notice.
  *
  * @since 3.0
  * @author Kristian Rosenvold
  *         Builds one or more lifecycles for a full module
- *         <p/>
  *         NOTE: This class is not part of any public api and can be changed or deleted without prior notice.
  */
 @Component( role = Builder.class, hint = "multithreaded" )
@@ -63,7 +68,6 @@ public class MultiThreadedBuilder
     @Requirement
     private LifecycleModuleBuilder lifecycleModuleBuilder;
 
-
     public MultiThreadedBuilder()
     {
     }
@@ -73,9 +77,15 @@ public class MultiThreadedBuilder
                        List<TaskSegment> taskSegments, ReactorBuildStatus reactorBuildStatus )
         throws ExecutionException, InterruptedException
     {
-        ExecutorService executor =
-            Executors.newFixedThreadPool( Math.min( session.getRequest().getDegreeOfConcurrency(),
-                                                    session.getProjects().size() ), new BuildThreadFactory() );
+        int nThreads = Math.min( session.getRequest().getDegreeOfConcurrency(), session.getProjects().size() );
+        boolean parallel = nThreads >= 2;
+        // Propagate the parallel flag to the root session and all of the cloned sessions in each project segment
+        session.setParallel( parallel );
+        for ( ProjectSegment segment : projectBuilds )
+        {
+            segment.getSession().setParallel( parallel );
+        }
+        ExecutorService executor = Executors.newFixedThreadPool( nThreads, new BuildThreadFactory() );
         CompletionService<ProjectSegment> service = new ExecutorCompletionService<>( executor );
         ConcurrencyDependencyGraph analyzer =
             new ConcurrencyDependencyGraph( projectBuilds, session.getProjectDependencyGraph() );
@@ -132,15 +142,20 @@ public class MultiThreadedBuilder
                 {
                     break;
                 }
-                final List<MavenProject> newItemsThatCanBeBuilt =
-                    analyzer.markAsFinished( projectBuild.getProject() );
-                for ( MavenProject mavenProject : newItemsThatCanBeBuilt )
+
+                // MNG-6170: Only schedule other modules from reactor if we have more modules to build than one. 
+                if ( analyzer.getNumberOfBuilds() > 1 )
                 {
-                    ProjectSegment scheduledDependent = projectBuildList.get( mavenProject );
-                    logger.debug( "Scheduling: " + scheduledDependent );
-                    Callable<ProjectSegment> cb =
-                        createBuildCallable( rootSession, scheduledDependent, reactorContext, taskSegment, muxer );
-                    service.submit( cb );
+                    final List<MavenProject> newItemsThatCanBeBuilt =
+                        analyzer.markAsFinished( projectBuild.getProject() );
+                    for ( MavenProject mavenProject : newItemsThatCanBeBuilt )
+                    {
+                        ProjectSegment scheduledDependent = projectBuildList.get( mavenProject );
+                        logger.debug( "Scheduling: " + scheduledDependent );
+                        Callable<ProjectSegment> cb =
+                            createBuildCallable( rootSession, scheduledDependent, reactorContext, taskSegment, muxer );
+                        service.submit( cb );
+                    }
                 }
             }
             catch ( InterruptedException e )
@@ -150,13 +165,13 @@ public class MultiThreadedBuilder
             }
             catch ( ExecutionException e )
             {
-                // TODO MNG-5766 changes likely made this redundant 
+                // TODO MNG-5766 changes likely made this redundant
                 rootSession.getResult().addException( e );
                 break;
             }
         }
 
-        // cancel outstanding builds (if any)  - this can happen if an exception is thrown in above block
+        // cancel outstanding builds (if any) - this can happen if an exception is thrown in above block
 
         Future<ProjectSegment> unprocessed;
         while ( ( unprocessed = service.poll() ) != null )

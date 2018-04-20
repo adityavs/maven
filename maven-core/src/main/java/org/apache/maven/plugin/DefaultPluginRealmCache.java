@@ -23,8 +23,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.Validate;
+import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
@@ -45,7 +48,9 @@ import org.eclipse.aether.repository.WorkspaceRepository;
 public class DefaultPluginRealmCache
     implements PluginRealmCache, Disposable
 {
-
+    /**
+     * CacheKey
+     */
     protected static class CacheKey
         implements Key
     {
@@ -71,7 +76,7 @@ public class DefaultPluginRealmCache
                          RepositorySystemSession session )
         {
             this.plugin = plugin.clone();
-            this.workspace = CacheUtils.getWorkspace( session );
+            this.workspace = RepositoryUtils.getWorkspace( session );
             this.localRepo = session.getLocalRepository();
             this.repositories = new ArrayList<>( repositories.size() );
             for ( RemoteRepository repository : repositories )
@@ -92,12 +97,12 @@ public class DefaultPluginRealmCache
 
             int hash = 17;
             hash = hash * 31 + CacheUtils.pluginHashCode( plugin );
-            hash = hash * 31 + hash( workspace );
-            hash = hash * 31 + hash( localRepo );
-            hash = hash * 31 + CacheUtils.repositoriesHashCode( repositories );
-            hash = hash * 31 + hash( parentRealm );
+            hash = hash * 31 + Objects.hashCode( workspace );
+            hash = hash * 31 + Objects.hashCode( localRepo );
+            hash = hash * 31 + RepositoryUtils.repositoriesHashCode( repositories );
+            hash = hash * 31 + Objects.hashCode( parentRealm );
             hash = hash * 31 + this.foreignImports.hashCode();
-            hash = hash * 31 + hash( dependencyFilter );
+            hash = hash * 31 + Objects.hashCode( dependencyFilter );
             this.hashCode = hash;
         }
 
@@ -111,11 +116,6 @@ public class DefaultPluginRealmCache
         public int hashCode()
         {
             return hashCode;
-        }
-
-        private static int hash( Object obj )
-        {
-            return obj != null ? obj.hashCode() : 0;
         }
 
         @Override
@@ -133,17 +133,14 @@ public class DefaultPluginRealmCache
 
             CacheKey that = (CacheKey) o;
 
-            return parentRealm == that.parentRealm && CacheUtils.pluginEquals( plugin, that.plugin )
-                && eq( workspace, that.workspace ) && eq( localRepo, that.localRepo )
-                && CacheUtils.repositoriesEquals( this.repositories, that.repositories ) && eq( filter, that.filter )
-                && eq( foreignImports, that.foreignImports );
+            return parentRealm == that.parentRealm 
+                && CacheUtils.pluginEquals( plugin, that.plugin )
+                && Objects.equals( workspace, that.workspace ) 
+                && Objects.equals( localRepo, that.localRepo )
+                && RepositoryUtils.repositoriesEquals( this.repositories, that.repositories ) 
+                && Objects.equals( filter, that.filter )
+                && Objects.equals( foreignImports, that.foreignImports );
         }
-
-        private static <T> boolean eq( T s1, T s2 )
-        {
-            return s1 != null ? s1.equals( s2 ) : s2 == null;
-        }
-
     }
 
     protected final Map<Key, CacheRecord> cache = new ConcurrentHashMap<>();
@@ -162,10 +159,8 @@ public class DefaultPluginRealmCache
 
     public CacheRecord put( Key key, ClassRealm pluginRealm, List<Artifact> pluginArtifacts )
     {
-        if ( pluginRealm == null || pluginArtifacts == null )
-        {
-            throw new IllegalArgumentException();
-        }
+        Validate.notNull( pluginRealm, "pluginRealm cannot be null" );
+        Validate.notNull( pluginArtifacts, "pluginArtifacts cannot be null" );
 
         if ( cache.containsKey( key ) )
         {
@@ -183,7 +178,7 @@ public class DefaultPluginRealmCache
     {
         for ( CacheRecord record : cache.values() )
         {
-            ClassRealm realm = record.realm;
+            ClassRealm realm = record.getRealm();
             try
             {
                 realm.getWorld().disposeRealm( realm.getId() );

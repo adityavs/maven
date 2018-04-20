@@ -121,8 +121,10 @@ public class DefaultRepositorySystemSessionFactory
         }
 
         int errorPolicy = 0;
-        errorPolicy |= request.isCacheNotFound() ? ResolutionErrorPolicy.CACHE_NOT_FOUND : 0;
-        errorPolicy |= request.isCacheTransferError() ? ResolutionErrorPolicy.CACHE_TRANSFER_ERROR : 0;
+        errorPolicy |= request.isCacheNotFound() ? ResolutionErrorPolicy.CACHE_NOT_FOUND
+            : ResolutionErrorPolicy.CACHE_DISABLED;
+        errorPolicy |= request.isCacheTransferError() ? ResolutionErrorPolicy.CACHE_TRANSFER_ERROR
+            : ResolutionErrorPolicy.CACHE_DISABLED;
         session.setResolutionErrorPolicy(
             new SimpleResolutionErrorPolicy( errorPolicy, errorPolicy | ResolutionErrorPolicy.CACHE_NOT_FOUND ) );
 
@@ -132,16 +134,16 @@ public class DefaultRepositorySystemSessionFactory
 
         if ( request.isUseLegacyLocalRepository() )
         {
-            logger.warn( "Disabling enhanced local repository: using legacy is strongly discouraged to ensure"
-                             + " build reproducibility." );
             try
             {
                 session.setLocalRepositoryManager( simpleLocalRepoMgrFactory.newInstance( session, localRepo ) );
+                logger.info( "Disabling enhanced local repository: using legacy is strongly discouraged to ensure"
+                                 + " build reproducibility." );
+
             }
             catch ( NoLocalRepositoryManagerException e )
             {
-
-                logger.warn( "Failed to configure legacy local repository: back to default" );
+                logger.error( "Failed to configure legacy local repository: falling back to default" );
                 session.setLocalRepositoryManager( repoSystem.newLocalRepositoryManager( session, localRepo ) );
             }
         }

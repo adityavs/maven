@@ -25,6 +25,9 @@ import java.util.List;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 
+/**
+ * MojoNotFoundException
+ */
 public class MojoNotFoundException
     extends Exception
 {
@@ -54,7 +57,7 @@ public class MojoNotFoundException
     {
         StringBuilder buffer = new StringBuilder( 256 );
 
-        buffer.append( "Could not find goal '" ).append( goal ).append( "'" );
+        buffer.append( "Could not find goal '" ).append( goal ).append( '\'' );
 
         if ( pluginDescriptor != null )
         {

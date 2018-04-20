@@ -19,15 +19,18 @@ package org.apache.maven.cli;
  * under the License.
  */
 
-import org.codehaus.plexus.util.Os;
-import org.slf4j.Logger;
+import static org.apache.maven.shared.utils.logging.MessageUtils.buffer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.TimeZone;
+
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.plexus.util.Os;
+import org.slf4j.Logger;
 
 /**
  * Utility class used to report errors, statistics, application version info, etc.
@@ -54,22 +57,22 @@ public final class CLIReportingUtils
     {
         final String ls = System.getProperty( "line.separator" );
         Properties properties = getBuildProperties();
-        StringBuilder version = new StringBuilder();
-        version.append( createMavenVersionString( properties ) ).append( ls );
+        StringBuilder version = new StringBuilder( 256 );
+        version.append( buffer().strong( createMavenVersionString( properties ) ) ).append( ls );
         version.append( reduce(
             properties.getProperty( "distributionShortName" ) + " home: " + System.getProperty( "maven.home",
-                                                                                                "<unknown maven "
+                                                                                                "<unknown Maven "
                                                                                                     + "home>" ) ) )
             .append(
             ls );
         version.append( "Java version: " ).append(
-            System.getProperty( "java.version", "<unknown java version>" ) ).append( ", vendor: " ).append(
+            System.getProperty( "java.version", "<unknown Java version>" ) ).append( ", vendor: " ).append(
             System.getProperty( "java.vendor", "<unknown vendor>" ) ).append( ls );
-        version.append( "Java home: " ).append( System.getProperty( "java.home", "<unknown java home>" ) ).append( ls );
+        version.append( "Java home: " ).append( System.getProperty( "java.home", "<unknown Java home>" ) ).append( ls );
         version.append( "Default locale: " ).append( Locale.getDefault() ).append( ", platform encoding: " ).append(
             System.getProperty( "file.encoding", "<unknown encoding>" ) ).append( ls );
         version.append( "OS name: \"" ).append( Os.OS_NAME ).append( "\", version: \"" ).append( Os.OS_VERSION ).append(
-            "\", arch: \"" ).append( Os.OS_ARCH ).append( "\", family: \"" ).append( Os.OS_FAMILY ).append( "\"" );
+            "\", arch: \"" ).append( Os.OS_ARCH ).append( "\", family: \"" ).append( Os.OS_FAMILY ).append( '\"' );
         return version.toString();
     }
 
@@ -92,7 +95,7 @@ public final class CLIReportingUtils
         {
             msg += " (";
             msg += ( rev != null ? rev : "" );
-            if ( timestamp != null )
+            if ( StringUtils.isNotBlank( timestamp ) )
             {
                 String ts = formatTimestamp( Long.valueOf( timestamp ) );
                 msg += ( rev != null ? "; " : "" ) + ts;
@@ -152,24 +155,8 @@ public final class CLIReportingUtils
 
     public static String formatTimestamp( long timestamp )
     {
-        // Manual construction of the tz offset because only Java 7 is aware of ISO 8601 time zones
-        TimeZone tz = TimeZone.getDefault();
-        int offset = tz.getRawOffset();
-
-        // Raw offset ignores DST, so check if we are in DST now and add the offset
-        if ( tz.inDaylightTime( new Date( timestamp ) ) )
-        {
-            offset += tz.getDSTSavings();
-        }
-
-        // CHECKSTYLE_OFF: MagicNumber
-        long m = Math.abs( ( offset / ONE_MINUTE ) % 60 );
-        long h = Math.abs( ( offset / ONE_HOUR ) % 24 );
-        // CHECKSTYLE_ON: MagicNumber
-
-        int offsetDir = (int) Math.signum( (float) offset );
-        char offsetSign = offsetDir >= 0 ? '+' : '-';
-        return String.format( "%tFT%<tT%s%02d:%02d", timestamp, offsetSign, h, m );
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ssXXX" );
+        return sdf.format( new Date( timestamp ) );
     }
 
     public static String formatDuration( long duration )
@@ -185,18 +172,22 @@ public final class CLIReportingUtils
         String format;
         if ( d > 0 )
         {
+            // Length 11+ chars
             format = "%d d %02d:%02d h";
         }
         else if ( h > 0 )
         {
+            // Length 7 chars
             format = "%2$02d:%3$02d h";
         }
         else if ( m > 0 )
         {
+            // Length 9 chars
             format = "%3$02d:%4$02d min";
         }
         else
         {
+            // Length 7-8 chars
             format = "%4$d.%5$03d s";
         }
 

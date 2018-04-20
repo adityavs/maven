@@ -41,14 +41,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+/**
+ * StringSearchModelInterpolator
+ */
 @Deprecated
 @Component( role = ModelInterpolator.class )
 public class StringSearchModelInterpolator
     extends AbstractStringBasedModelInterpolator
 {
 
-    private static final Map<Class<?>, Field[]> fieldsByClass = new WeakHashMap<>();
-    private static final Map<Class<?>, Boolean> fieldIsPrimitiveByClass = new WeakHashMap<>();
+    private static final Map<Class<?>, Field[]> FIELDS_BY_CLASS = new WeakHashMap<>();
+    private static final Map<Class<?>, Boolean> PRIMITIVE_BY_CLASS = new WeakHashMap<>();
 
     public StringSearchModelInterpolator()
     {
@@ -111,7 +114,7 @@ public class StringSearchModelInterpolator
         private final List<ValueSource> valueSources;
         private final List<InterpolationPostProcessor> postProcessors;
 
-        public InterpolateObjectAction( Object target, List<ValueSource> valueSources,
+        InterpolateObjectAction( Object target, List<ValueSource> valueSources,
                                         List<InterpolationPostProcessor> postProcessors, boolean debugEnabled,
                                         StringSearchModelInterpolator modelInterpolator, Logger logger )
         {
@@ -145,7 +148,7 @@ public class StringSearchModelInterpolator
             return null;
         }
 
-        @SuppressWarnings( "unchecked" )
+        @SuppressWarnings( { "unchecked", "checkstyle:methodlength" } )
         private void traverseObjectWithParents( Class<?> cls, Object target )
             throws ModelInterpolationException
         {
@@ -161,11 +164,11 @@ public class StringSearchModelInterpolator
             }
             else if ( isQualifiedForInterpolation( cls ) )
             {
-                Field[] fields = fieldsByClass.get( cls );
+                Field[] fields = FIELDS_BY_CLASS.get( cls );
                 if ( fields == null )
                 {
                     fields = cls.getDeclaredFields();
-                    fieldsByClass.put( cls, fields );
+                    FIELDS_BY_CLASS.put( cls, fields );
                 }
 
                 for ( Field field : fields )
@@ -350,12 +353,12 @@ public class StringSearchModelInterpolator
 
         private boolean isQualifiedForInterpolation( Field field, Class<?> fieldType )
         {
-            if ( !fieldIsPrimitiveByClass.containsKey( fieldType ) )
+            if ( !PRIMITIVE_BY_CLASS.containsKey( fieldType ) )
             {
-                fieldIsPrimitiveByClass.put( fieldType, fieldType.isPrimitive() );
+                PRIMITIVE_BY_CLASS.put( fieldType, fieldType.isPrimitive() );
             }
 
-            if ( fieldIsPrimitiveByClass.get( fieldType ) )
+            if ( PRIMITIVE_BY_CLASS.get( fieldType ) )
             {
                 return false;
             }

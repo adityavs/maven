@@ -82,6 +82,7 @@ public class DefaultModelProblem
      * @param exception The exception that caused this problem, may be {@code null}.
      */
     //mkleint: does this need to be public?
+    @SuppressWarnings( "checkstyle:parameternumber" )
     public DefaultModelProblem( String message, Severity severity, Version version, String source, int lineNumber,
                                 int columnNumber, String modelId, Exception exception )
     {
@@ -165,7 +166,7 @@ public class DefaultModelProblem
     {
         StringBuilder buffer = new StringBuilder( 128 );
 
-        buffer.append( "[" ).append( getSeverity() ).append( "] " );
+        buffer.append( '[' ).append( getSeverity() ).append( "] " );
         buffer.append( getMessage() );
         buffer.append( " @ " ).append( ModelProblemUtils.formatLocation( this, null ) );
 

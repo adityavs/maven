@@ -33,12 +33,12 @@ import org.apache.maven.lifecycle.internal.ProjectBuildList;
 import org.apache.maven.lifecycle.internal.ProjectSegment;
 
 /**
+ * <strong>NOTE:</strong> This class is not part of any public api and can be changed or deleted without prior notice.
+ * This class in particular may spontaneously self-combust and be replaced by a plexus-compliant thread aware
+ * logger implementation at any time.
+ * 
  * @since 3.0
  * @author Kristian Rosenvold
- *         <p/>
- *         NOTE: This class is not part of any public api and can be changed or deleted without prior notice.
- *         This class in particular may spontaneusly self-combust and be replaced by a plexus-compliant thread aware
- *         logger implementation at any time.
  */
 @SuppressWarnings( { "SynchronizationOnLocalVariableOrMethodParameter" } )
 public class ThreadOutputMuxer
@@ -54,7 +54,7 @@ public class ThreadOutputMuxer
 
     private final ByteArrayOutputStream defaultOutputStreamForUnknownData = new ByteArrayOutputStream();
 
-    private final PrintStream defaultPringStream = new PrintStream( defaultOutputStreamForUnknownData );
+    private final PrintStream defaultPrintStream = new PrintStream( defaultOutputStreamForUnknownData );
 
     private final Set<ProjectSegment> completedBuilds = Collections.synchronizedSet( new HashSet<ProjectSegment>() );
 
@@ -71,7 +71,7 @@ public class ThreadOutputMuxer
     class ConsolePrinter
         implements Runnable
     {
-        public volatile boolean running;
+        private volatile boolean running;
 
         private final ProjectBuildList projectBuildList;
 
@@ -175,7 +175,7 @@ public class ThreadOutputMuxer
         ProjectSegment threadProject = projectBuildThreadLocal.get();
         if ( threadProject == null )
         {
-            return defaultPringStream;
+            return defaultPrintStream;
         }
         if ( ownsRealOutputStream( threadProject ) )
         {
@@ -209,7 +209,7 @@ public class ThreadOutputMuxer
         extends PrintStream
     {
 
-        public ThreadBoundPrintStream( PrintStream systemOutStream )
+        ThreadBoundPrintStream( PrintStream systemOutStream )
         {
             super( systemOutStream );
         }

@@ -29,11 +29,13 @@ import java.util.Properties;
 import java.util.Stack;
 
 /**
+ * <p>
  * Generic implementation of version comparison.
- *
- * <p>Features:
+ * </p>
+ * 
+ * Features:
  * <ul>
- * <li>mixing of '<code>-</code>' (dash) and '<code>.</code>' (dot) separators,</li>
+ * <li>mixing of '<code>-</code>' (hyphen) and '<code>.</code>' (dot) separators,</li>
  * <li>transition between characters and digits also constitutes a separator:
  *     <code>1.0alpha1 =&gt; [1, 0, alpha, 1]</code></li>
  * <li>unlimited number of version components,</li>
@@ -50,8 +52,8 @@ import java.util.Stack;
  *     </ul>
  *     Unknown qualifiers are considered after known qualifiers, with lexical order (always case insensitive),
  *   </li>
- * <li>a dash usually precedes a qualifier, and is always less important than something preceded with a dot.</li>
- * </ul></p>
+ * <li>a hyphen usually precedes a qualifier, and is always less important than something preceded with a dot.</li>
+ * </ul>
  *
  * @see <a href="https://cwiki.apache.org/confluence/display/MAVENOLD/Versioning">"Versioning" on Maven Wiki</a>
  * @author <a href="mailto:kenney@apache.org">Kenney Westerhof</a>
@@ -96,7 +98,7 @@ public class ComparableVersion
             this.value = BIG_INTEGER_ZERO;
         }
 
-        public IntegerItem( String str )
+        IntegerItem( String str )
         {
             this.value = new BigInteger( str );
         }
@@ -146,10 +148,8 @@ public class ComparableVersion
     private static class StringItem
         implements Item
     {
-        private static final String[] QUALIFIERS = { "alpha", "beta", "milestone", "rc", "snapshot", "", "sp" };
-
-        @SuppressWarnings( "checkstyle:constantname" )
-        private static final List<String> _QUALIFIERS = Arrays.asList( QUALIFIERS );
+        private static final List<String> QUALIFIERS =
+                Arrays.asList( "alpha", "beta", "milestone", "rc", "snapshot", "", "sp"  );
 
         private static final Properties ALIASES = new Properties();
         static
@@ -163,11 +163,11 @@ public class ComparableVersion
          * A comparable value for the empty-string qualifier. This one is used to determine if a given qualifier makes
          * the version older than one without a qualifier, or more recent.
          */
-        private static final String RELEASE_VERSION_INDEX = String.valueOf( _QUALIFIERS.indexOf( "" ) );
+        private static final String RELEASE_VERSION_INDEX = String.valueOf( QUALIFIERS.indexOf( "" ) );
 
         private String value;
 
-        public StringItem( String value, boolean followedByDigit )
+        StringItem( String value, boolean followedByDigit )
         {
             if ( followedByDigit && value.length() == 1 )
             {
@@ -214,9 +214,9 @@ public class ComparableVersion
          */
         public static String comparableQualifier( String qualifier )
         {
-            int i = _QUALIFIERS.indexOf( qualifier );
+            int i = QUALIFIERS.indexOf( qualifier );
 
-            return i == -1 ? ( _QUALIFIERS.size() + "-" + qualifier ) : String.valueOf( i );
+            return i == -1 ? ( QUALIFIERS.size() + "-" + qualifier ) : String.valueOf( i );
         }
 
         public int compareTo( Item item )
@@ -348,6 +348,7 @@ public class ComparableVersion
         parseVersion( version );
     }
 
+    @SuppressWarnings( "checkstyle:innerassignment" )
     public final void parseVersion( String version )
     {
         this.value = version;
@@ -468,11 +469,24 @@ public class ComparableVersion
         return canonical.hashCode();
     }
 
+    // CHECKSTYLE_OFF: LineLength
     /**
      * Main to test version parsing and comparison.
+     * <p>
+     * To check how "1.2.7" compares to "1.2-SNAPSHOT", for example, you can issue
+     * <pre>java -jar ${maven.repo.local}/org/apache/maven/maven-artifact/${maven.version}/maven-artifact-${maven.version}.jar "1.2.7" "1.2-SNAPSHOT"</pre>
+     * command to command line. Result of given command will be something like this:
+     * <pre>
+     * Display parameters as parsed by Maven (in canonical form) and comparison result:
+     * 1. 1.2.7 == 1.2.7
+     *    1.2.7 &gt; 1.2-SNAPSHOT
+     * 2. 1.2-SNAPSHOT == 1.2-snapshot
+     * </pre>
      *
-     * @param args the version strings to parse and compare
+     * @param args the version strings to parse and compare. You can pass arbitrary number of version strings and always
+     * two adjacent will be compared
      */
+    // CHECKSTYLE_ON: LineLength
     public static void main( String... args )
     {
         System.out.println( "Display parameters as parsed by Maven (in canonical form) and comparison result:" );

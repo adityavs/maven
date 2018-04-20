@@ -18,7 +18,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-
+<!-- START SNIPPET: core-extension -->
 <extension>
   <exportedPackages>
     <!-- maven-* -->
@@ -54,7 +54,7 @@ under the License.
     <exportedPackage>org.apache.maven.wagon.repository</exportedPackage>
     <exportedPackage>org.apache.maven.wagon.resource</exportedPackage>
 
-    <!-- aether-api, aether-spi, aether-impl -->
+    <!-- maven-resolver-api, maven-resolver-spi, maven-resolver-impl -->
     <exportedPackage>org.eclipse.aether.*</exportedPackage>
     <exportedPackage>org.eclipse.aether.artifact</exportedPackage>
     <exportedPackage>org.eclipse.aether.collection</exportedPackage>
@@ -98,6 +98,9 @@ under the License.
     <exportedPackage>javax.enterprise.util.*</exportedPackage>
     <exportedPackage>javax.enterprise.inject.*</exportedPackage>
 
+    <!-- javax.annotation (JSR-250) -->
+    <exportedPackage>javax.annotation.*</exportedPackage>
+    <exportedPackage>javax.annotation.security.*</exportedPackage>
 
     <!-- 
       | We may potentially want to export these, but right now I'm not sure that anything Guice specific needs
@@ -116,7 +119,10 @@ under the License.
     <!-- SLF4J -->
     <exportedPackage>org.slf4j.*</exportedPackage>
     <exportedPackage>org.slf4j.spi.*</exportedPackage>
+    <exportedPackage>org.slf4j.helpers.*</exportedPackage>
 
+    <!-- JAnsi -->
+    <exportedPackage>org.fusesource.jansi.*</exportedPackage>
   </exportedPackages>
 
   <exportedArtifacts>
@@ -129,7 +135,12 @@ under the License.
     <exportedArtifact>org.sonatype.sisu:sisu-inject-plexus</exportedArtifact>
     <exportedArtifact>org.eclipse.sisu:org.eclipse.sisu.plexus</exportedArtifact>
     <exportedArtifact>org.apache.maven:maven-artifact</exportedArtifact>
+    <!--
+      | MNG-6240: Plugins might depend on maven-aether-provider <= 3.3.9 before the rename to maven-resolver-provider.
+      | Since backwards-compatibility was kept, Maven Core also provides this artifact.
+     -->
     <exportedArtifact>org.apache.maven:maven-aether-provider</exportedArtifact>
+    <exportedArtifact>org.apache.maven:maven-resolver-provider</exportedArtifact>
     <exportedArtifact>org.apache.maven:maven-artifact-manager</exportedArtifact>
     <exportedArtifact>org.apache.maven:maven-compat</exportedArtifact>
     <exportedArtifact>org.apache.maven:maven-core</exportedArtifact>
@@ -149,19 +160,24 @@ under the License.
     <exportedArtifact>org.apache.maven:maven-settings-builder</exportedArtifact>
     <exportedArtifact>org.apache.maven:maven-toolchain</exportedArtifact>
     <exportedArtifact>org.apache.maven.wagon:wagon-provider-api</exportedArtifact>
-    <exportedArtifact>org.eclipse.aether:aether-api</exportedArtifact>
-    <exportedArtifact>org.eclipse.aether:aether-spi</exportedArtifact>
-    <exportedArtifact>org.eclipse.aether:aether-impl</exportedArtifact>
+    <exportedArtifact>org.apache.maven.resolver:maven-resolver-api</exportedArtifact>
+    <exportedArtifact>org.apache.maven.resolver:maven-resolver-spi</exportedArtifact>
+    <exportedArtifact>org.apache.maven.resolver:maven-resolver-impl</exportedArtifact>
 
     <exportedArtifact>javax.inject:javax.inject</exportedArtifact>
+    <exportedArtifact>javax.annotation:jsr250-api</exportedArtifact>
     <exportedArtifact>org.slf4j:slf4j-api</exportedArtifact>
+    <exportedArtifact>org.fusesource.jansi:jansi</exportedArtifact>
 
     <!--
-      | We must also filter out the old or NoClassDefFoundErrors will surface  
+      | We must also filter out the old Aether or NoClassDefFoundErrors will surface  
      -->
     <exportedArtifact>org.sonatype.aether:aether-api</exportedArtifact>
     <exportedArtifact>org.sonatype.aether:aether-spi</exportedArtifact>
     <exportedArtifact>org.sonatype.aether:aether-impl</exportedArtifact>
+    <exportedArtifact>org.eclipse.aether:aether-api</exportedArtifact>
+    <exportedArtifact>org.eclipse.aether:aether-spi</exportedArtifact>
+    <exportedArtifact>org.eclipse.aether:aether-impl</exportedArtifact>
 
     <!--
       | NOTE: Don't exclude the wagons or any of their dependencies (apart from the wagon API). This would otherwise
@@ -171,3 +187,4 @@ under the License.
      -->
   </exportedArtifacts>
 </extension>
+<!-- END SNIPPET: core-extension -->

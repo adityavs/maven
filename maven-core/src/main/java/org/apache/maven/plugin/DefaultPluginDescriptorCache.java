@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.descriptor.MojoDescriptor;
@@ -140,13 +141,13 @@ public class DefaultPluginDescriptorCache
 
         private final int hashCode;
 
-        public CacheKey( Plugin plugin, List<RemoteRepository> repositories, RepositorySystemSession session )
+        CacheKey( Plugin plugin, List<RemoteRepository> repositories, RepositorySystemSession session )
         {
             groupId = plugin.getGroupId();
             artifactId = plugin.getArtifactId();
             version = plugin.getVersion();
 
-            workspace = CacheUtils.getWorkspace( session );
+            workspace = RepositoryUtils.getWorkspace( session );
             localRepo = session.getLocalRepository();
             this.repositories = new ArrayList<>( repositories.size() );
             for ( RemoteRepository repository : repositories )
@@ -167,7 +168,7 @@ public class DefaultPluginDescriptorCache
             hash = hash * 31 + version.hashCode();
             hash = hash * 31 + hash( workspace );
             hash = hash * 31 + localRepo.hashCode();
-            hash = hash * 31 + CacheUtils.repositoriesHashCode( repositories );
+            hash = hash * 31 + RepositoryUtils.repositoriesHashCode( repositories );
             this.hashCode = hash;
         }
 
@@ -195,7 +196,7 @@ public class DefaultPluginDescriptorCache
             return eq( this.artifactId, that.artifactId ) && eq( this.groupId, that.groupId )
                 && eq( this.version, that.version ) && eq( this.localRepo, that.localRepo )
                 && eq( this.workspace, that.workspace )
-                && CacheUtils.repositoriesEquals( this.repositories, that.repositories );
+                && RepositoryUtils.repositoriesEquals( this.repositories, that.repositories );
         }
 
         @Override

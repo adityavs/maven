@@ -21,15 +21,21 @@ package org.apache.maven.model.interpolation;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.TimeZone;
 
+/**
+ * MavenBuildTimestamp
+ */
 public class MavenBuildTimestamp
 {
     // ISO 8601-compliant timestamp for machine readability
     public static final String DEFAULT_BUILD_TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
     public static final String BUILD_TIMESTAMP_FORMAT_PROPERTY = "maven.build.timestamp.format";
+
+    public static final TimeZone DEFAULT_BUILD_TIME_ZONE = TimeZone.getTimeZone( "Etc/UTC" );
 
     private String formattedTimestamp;
 
@@ -59,7 +65,8 @@ public class MavenBuildTimestamp
             time = new Date();
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat( timestampFormat );
-        dateFormat.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
+        dateFormat.setCalendar( new GregorianCalendar() );
+        dateFormat.setTimeZone( DEFAULT_BUILD_TIME_ZONE );
         formattedTimestamp = dateFormat.format( time );
     }
 

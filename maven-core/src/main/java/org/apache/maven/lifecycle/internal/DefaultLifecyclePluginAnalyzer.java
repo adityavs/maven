@@ -31,6 +31,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,13 +43,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * <strong>NOTE:</strong> This class is not part of any public api and can be changed or deleted without prior notice.
+ * 
  * @since 3.0
  * @author Benjamin Bentmann
  * @author Jason van Zyl
  * @author jdcasey
  * @author Kristian Rosenvold (extracted class only)
- *         <p/>
- *         NOTE: This class is not part of any public api and can be changed or deleted without prior notice.
  */
 @Component( role = LifeCyclePluginAnalyzer.class )
 public class DefaultLifecyclePluginAnalyzer
@@ -73,7 +74,7 @@ public class DefaultLifecyclePluginAnalyzer
     // together and this really shows the problem of constructing a sensible default configuration but
     // it's all encapsulated here so it appears normalized to the POM builder.
 
-    // We are going to take the project packaging and find all plugin in the default lifecycle and create
+    // We are going to take the project packaging and find all plugins in the default lifecycle and create
     // fully populated Plugin objects, including executions with goals and default configuration taken
     // from the plugin.xml inside a plugin.
     //
@@ -82,7 +83,7 @@ public class DefaultLifecyclePluginAnalyzer
     {
         if ( logger.isDebugEnabled() )
         {
-            logger.debug( "Looking up lifecyle mappings for packaging " + packaging + " from "
+            logger.debug( "Looking up lifecycle mappings for packaging " + packaging + " from "
                 + Thread.currentThread().getContextClassLoader() );
         }
 
@@ -190,8 +191,13 @@ public class DefaultLifecyclePluginAnalyzer
                 execution.setPhase( phase );
                 execution.setPriority( i - mojos.size() );
                 execution.getGoals().add( gs.goal );
-                execution.setConfiguration( mojo.getConfiguration() );
-                
+
+                Xpp3Dom lifecycleConfiguration = mojo.getConfiguration();
+                if ( lifecycleConfiguration != null )
+                {
+                    execution.setConfiguration( new Xpp3Dom( lifecycleConfiguration ) );
+                }
+
                 plugin.setDependencies( mojo.getDependencies() );
                 plugin.getExecutions().add( execution );
             }

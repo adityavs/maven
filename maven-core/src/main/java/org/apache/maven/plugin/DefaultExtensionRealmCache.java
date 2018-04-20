@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.ExtensionDescriptor;
 import org.apache.maven.project.MavenProject;
@@ -40,7 +41,9 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Disposable;
 public class DefaultExtensionRealmCache
     implements ExtensionRealmCache, Disposable
 {
-
+    /**
+     * CacheKey
+     */
     protected static class CacheKey
         implements Key
     {
@@ -123,10 +126,7 @@ public class DefaultExtensionRealmCache
     public CacheRecord put( Key key, ClassRealm extensionRealm, ExtensionDescriptor extensionDescriptor,
                             List<Artifact> artifacts )
     {
-        if ( extensionRealm == null )
-        {
-            throw new NullPointerException();
-        }
+        Validate.notNull( extensionRealm, "extensionRealm cannot be null" );
 
         if ( cache.containsKey( key ) )
         {
@@ -144,7 +144,7 @@ public class DefaultExtensionRealmCache
     {
         for ( CacheRecord record : cache.values() )
         {
-            ClassRealm realm = record.realm;
+            ClassRealm realm = record.getRealm();
             try
             {
                 realm.getWorld().disposeRealm( realm.getId() );

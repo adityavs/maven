@@ -59,14 +59,13 @@ import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
-import com.google.common.collect.ImmutableMap;
 
 /**
+ * <strong>NOTE:</strong> This class is not part of any public api and can be changed or deleted without prior notice.
+ * 
  * @since 3.0
  * @author Benjamin Bentmann
  * @author Kristian Rosenvold (Extract class)
- *         <p/>
- *         NOTE: This class is not part of any public api and can be changed or deleted without prior notice.
  */
 @Component( role = LifecycleExecutionPlanCalculator.class )
 public class DefaultLifecycleExecutionPlanCalculator
@@ -111,8 +110,8 @@ public class DefaultLifecycleExecutionPlanCalculator
         this.defaultLifeCycles = defaultLifeCycles;
         this.mojoDescriptorCreator = mojoDescriptorCreator;
         this.lifecyclePluginResolver = lifecyclePluginResolver;
-        this.mojoExecutionConfigurators =
-            ImmutableMap.of( "default", (MojoExecutionConfigurator) new DefaultMojoExecutionConfigurator() );
+        this.mojoExecutionConfigurators = Collections.singletonMap(
+             "default", (MojoExecutionConfigurator) new DefaultMojoExecutionConfigurator() );
     }
 
     @Override
@@ -525,8 +524,8 @@ public class DefaultLifecycleExecutionPlanCalculator
     }
 
     // org.apache.maven.plugins:maven-remote-resources-plugin:1.0:process
-    // TODO: take repo mans into account as one may be aggregating prefixes of many
-    // TODO: collect at the root of the repository, read the one at the root, and fetch remote if something is missing
+    // TODO take repo mans into account as one may be aggregating prefixes of many
+    // TODO collect at the root of the repository, read the one at the root, and fetch remote if something is missing
     // or the user forces the issue
 
     private List<MojoExecution> calculateForkedGoal( MojoExecution mojoExecution, MavenSession session,

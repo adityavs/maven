@@ -25,10 +25,10 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
@@ -45,10 +45,7 @@ public class DefaultMetadataReader
     public Metadata read( File input, Map<String, ?> options )
         throws IOException
     {
-        if ( input == null )
-        {
-            throw new IllegalArgumentException( "input file missing" );
-        }
+        Validate.notNull( input, "input cannot be null" );
 
         Metadata metadata = read( ReaderFactory.newXmlReader( input ), options );
 
@@ -58,46 +55,30 @@ public class DefaultMetadataReader
     public Metadata read( Reader input, Map<String, ?> options )
         throws IOException
     {
-        if ( input == null )
-        {
-            throw new IllegalArgumentException( "input reader missing" );
-        }
+        Validate.notNull( input, "input cannot be null" );
 
-        try
+        try ( final Reader in = input )
         {
-            MetadataXpp3Reader r = new MetadataXpp3Reader();
-            return r.read( input, isStrict( options ) );
+            return new MetadataXpp3Reader().read( in, isStrict( options ) );
         }
         catch ( XmlPullParserException e )
         {
             throw new MetadataParseException( e.getMessage(), e.getLineNumber(), e.getColumnNumber(), e );
-        }
-        finally
-        {
-            IOUtil.close( input );
         }
     }
 
     public Metadata read( InputStream input, Map<String, ?> options )
         throws IOException
     {
-        if ( input == null )
-        {
-            throw new IllegalArgumentException( "input stream missing" );
-        }
+        Validate.notNull( input, "input cannot be null" );
 
-        try
+        try ( final InputStream in = input )
         {
-            MetadataXpp3Reader r = new MetadataXpp3Reader();
-            return r.read( input, isStrict( options ) );
+            return new MetadataXpp3Reader().read( in, isStrict( options ) );
         }
         catch ( XmlPullParserException e )
         {
             throw new MetadataParseException( e.getMessage(), e.getLineNumber(), e.getColumnNumber(), e );
-        }
-        finally
-        {
-            IOUtil.close( input );
         }
     }
 
