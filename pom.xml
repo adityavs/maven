@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
@@ -25,12 +25,12 @@ under the License.
   <parent>
     <groupId>org.apache.maven</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>31</version>
+    <version>32</version>
     <relativePath>../pom/maven/pom.xml</relativePath>
   </parent>
 
   <artifactId>maven</artifactId>
-  <version>3.5.4-SNAPSHOT</version>
+  <version>3.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache Maven</name>
@@ -53,14 +53,13 @@ under the License.
     <commonsCliVersion>1.4</commonsCliVersion>
     <commonsLangVersion>3.5</commonsLangVersion>
     <junitVersion>4.12</junitVersion>
-    <mockitoVersion>2.12.0</mockitoVersion>
+    <mockitoVersion>2.21.0</mockitoVersion>
     <plexusVersion>1.7.1</plexusVersion>
-    <plexusInterpolationVersion>1.24</plexusInterpolationVersion>
+    <plexusInterpolationVersion>1.25</plexusInterpolationVersion>
     <plexusUtilsVersion>3.1.0</plexusUtilsVersion>
-    <guavaVersion>20.0</guavaVersion>
-    <guiceVersion>4.0</guiceVersion>
+    <guiceVersion>4.2.0</guiceVersion>
     <sisuInjectVersion>0.3.3</sisuInjectVersion>
-    <wagonVersion>3.0.0</wagonVersion>
+    <wagonVersion>3.1.0</wagonVersion>
     <securityDispatcherVersion>1.4</securityDispatcherVersion>
     <cipherVersion>1.7</cipherVersion>
     <modelloVersion>1.9.1</modelloVersion>
@@ -112,7 +111,7 @@ under the License.
     <downloadUrl>https://maven.apache.org/download.html</downloadUrl>
     <site>
       <id>apache.website</id>
-      <url>scm:svn:https://svn.apache.org/repos/infra/websites/production/maven/components/${maven.site.path}</url>
+      <url>scm:svn:https://svn.apache.org/repos/asf/maven/website/components/${maven.site.path}</url>
     </site>
   </distributionManagement>
 
@@ -228,11 +227,6 @@ under the License.
         <version>${plexusUtilsVersion}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>${guavaVersion}</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.inject</groupId>
         <artifactId>guice</artifactId>
         <version>${guiceVersion}</version>
@@ -292,7 +286,7 @@ under the License.
       <dependency>
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
-        <version>1.17</version>
+        <version>1.17.1</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
